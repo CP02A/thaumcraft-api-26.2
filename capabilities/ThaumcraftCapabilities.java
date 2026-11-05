@@ -2,9 +2,10 @@ package thaumcraft.api.capabilities;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.capabilities.CapabilityToken;
 
 /**
  * 
@@ -18,15 +19,14 @@ public class ThaumcraftCapabilities {
 	/**
 	 * The capability object for IPlayerKnowledge
 	 */
-	@CapabilityInject(IPlayerKnowledge.class)
-	public static final Capability<IPlayerKnowledge> KNOWLEDGE = null;
+	public static final Capability<IPlayerKnowledge> KNOWLEDGE = CapabilityManager.get(new CapabilityToken<>(){});
 
 	/**
 	 * Retrieves the knowledge capability handler for the supplied player
 	 */
-	public static IPlayerKnowledge getKnowledge(@Nonnull EntityPlayer player)
+	public static IPlayerKnowledge getKnowledge(@Nonnull Player player)
 	{
-		return player.getCapability(KNOWLEDGE, null);
+		return player.getCapability(KNOWLEDGE).orElse(null);
 	}
 	
 	/**
@@ -40,14 +40,14 @@ public class ThaumcraftCapabilities {
 	 * @param research 
 	 * @return
 	 */
-	public static boolean knowsResearch(@Nonnull EntityPlayer player, @Nonnull String... research) {
+	public static boolean knowsResearch(@Nonnull Player player, @Nonnull String... research) {
 		for (String r : research) {
 			if (r.contains("&&")) {
 				String[] rr = r.split("&&");
 				if (!knowsResearch(player,rr)) return false;
 			} else
 			if (r.contains("||")) {
-				String[] rr = r.split("||");
+				String[] rr = r.split("\\|\\|");
 				for (String str : rr)
 					if (knowsResearch(player,str)) return true;
 			} else
@@ -67,14 +67,14 @@ public class ThaumcraftCapabilities {
 	 * @param research
 	 * @return
 	 */
-	public static boolean knowsResearchStrict(@Nonnull EntityPlayer player, @Nonnull String... research) {
+	public static boolean knowsResearchStrict(@Nonnull Player player, @Nonnull String... research) {
 		for (String r : research) {
 			if (r.contains("&&")) {
 				String[] rr = r.split("&&");
 				if (!knowsResearchStrict(player,rr)) return false;
 			} else
 			if (r.contains("||")) {
-				String[] rr = r.split("||");
+				String[] rr = r.split("\\|\\|");
 				for (String str : rr)
 					if (knowsResearchStrict(player,str)) return true;
 			} else
@@ -93,15 +93,14 @@ public class ThaumcraftCapabilities {
 	/**
 	 * The capability object for IPlayerWarp
 	 */
-	@CapabilityInject(IPlayerWarp.class)
-	public static final Capability<IPlayerWarp> WARP = null;
+	public static final Capability<IPlayerWarp> WARP = CapabilityManager.get(new CapabilityToken<>(){});
 
 	/**
 	 * Retrieves the warp capability handler for the supplied player
 	 */
-	public static IPlayerWarp getWarp(@Nonnull EntityPlayer player)
+	public static IPlayerWarp getWarp(@Nonnull Player player)
 	{
-		return player.getCapability(WARP, null);
+		return player.getCapability(WARP).orElse(null);
 	}
 
 	

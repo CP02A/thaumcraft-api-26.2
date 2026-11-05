@@ -1,7 +1,7 @@
 package thaumcraft.api.items;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * 
@@ -10,8 +10,8 @@ import net.minecraft.item.ItemStack;
  * Armor, held items or bauble slot items that implement this interface add warp when equipped or held.
  * 
  * IMPORTANT: 
- * You can also add a "TC.WARP" nbt byte tag to an item which serves much the same function without having to implement this interface. 
- * Warp from this interface and the nbt tag stacks.
+ * You can also add a "TC.WARP" byte tag to an item's custom data component which serves much the same function without having to implement this interface. 
+ * Warp from this interface and the custom data tag stacks.
  *
  */
 
@@ -20,7 +20,7 @@ public interface IWarpingGear {
 	/**
 	 * returns how much warp this item adds while worn or held. 
 	 */
-	public int getWarp(ItemStack itemstack, EntityPlayer player);
+	public int getWarp(ItemStack itemstack, Player player);
 	
 
 }

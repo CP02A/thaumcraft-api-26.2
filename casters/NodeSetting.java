@@ -1,7 +1,7 @@
 package thaumcraft.api.casters;
 
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.translation.I18n;
+import net.minecraft.locale.Language;
+import net.minecraft.util.Mth;
 
 public class NodeSetting {
 	
@@ -45,7 +45,7 @@ public class NodeSetting {
 	}
 
 	public String getValueText() {
-		return I18n.translateToLocal(type.getValueText(value));
+		return Language.getInstance().getOrDefault(type.getValueText(value));
 	}
 
 	public void increment() {
@@ -63,7 +63,7 @@ public class NodeSetting {
 	}
 
 	public String getLocalizedName() {
-		return I18n.translateToLocal(description);
+		return Language.getInstance().getOrDefault(description);
 	}
 
 
@@ -92,7 +92,7 @@ public class NodeSetting {
 		
 		@Override
 		public int clamp(int old) {			
-			return MathHelper.clamp(old, 0, values.length-1);
+			return Mth.clamp(old, 0, values.length-1);
 		}
 
 		@Override
@@ -121,7 +121,7 @@ public class NodeSetting {
 		
 		@Override
 		public int clamp(int old) {			
-			return MathHelper.clamp(old, min, max);
+			return Mth.clamp(old, min, max);
 		}
 
 		@Override

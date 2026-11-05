@@ -1,8 +1,8 @@
 package thaumcraft.api.crafting;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import thaumcraft.api.ThaumcraftApiHelper;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
@@ -29,26 +29,36 @@ public class CrucibleRecipe implements IThaumcraftRecipe  {
             throw new RuntimeException("Invalid crucible recipe catalyst: "+ catalyst);
         }
 		
-		generateHash();
+		generateHash(catalyst);
 	}
 		
-	private void generateHash() {
+	/**
+	 * The hash is built from the research, the output and the catalyst as it was passed in.
+	 * Tag ingredients are hashed by their tag id rather than their contents, because tags are not
+	 * bound until data packs load and their contents can change on reload.
+	 */
+	private void generateHash(Object cat) {
 		String hc = research;		
 		hc += recipeOutput.toString();
-		if (recipeOutput.hasTagCompound()) {
-			hc += recipeOutput.getTagCompound().toString();
+		if (!recipeOutput.getComponentsPatch().isEmpty()) {
+			hc += recipeOutput.getComponentsPatch().toString();
 		}	
-		for (ItemStack is:getCatalyst().getMatchingStacks()) {
+		if (cat instanceof ItemStack) {
+			ItemStack is = (ItemStack) cat;
 			hc += is.toString();
-			if (is.hasTagCompound()) {
-				hc += is.getTagCompound().toString();
-			}			
+			if (!is.getComponentsPatch().isEmpty()) {
+				hc += is.getComponentsPatch().toString();
+			}
+		} else if (cat instanceof Ingredient) {
+			hc += ((Ingredient) cat).display().toString();
+		} else {
+			hc += String.valueOf(cat);
 		}
 		hash = hc.hashCode();
 	}
 
 	public boolean matches(AspectList itags, ItemStack cat) {	
-		if (!getCatalyst().apply(cat)) return false;		
+		if (!getCatalyst().test(cat)) return false;		
 		if (itags==null) return false;
 		for (Aspect tag:getAspects().getAspects()) {
 			if (itags.getAmount(tag)<getAspects().getAmount(tag)) return false;
@@ -57,7 +67,7 @@ public class CrucibleRecipe implements IThaumcraftRecipe  {
 	}
 	
 	public boolean catalystMatches(ItemStack cat) {
-		return getCatalyst().apply(cat);
+		return getCatalyst().test(cat);
 	}
 	
 	public AspectList removeMatching(AspectList itags) {
@@ -102,7 +112,7 @@ public class CrucibleRecipe implements IThaumcraftRecipe  {
 		return group;
 	}
 	
-	public CrucibleRecipe setGroup(ResourceLocation s) {
+	public CrucibleRecipe setGroup(Identifier s) {
 		this.group=s.toString();
 		return this;
 	}

@@ -1,8 +1,8 @@
 package thaumcraft.api.research.theorycraft;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.util.Mth;
+import net.minecraft.locale.Language;
 import thaumcraft.api.research.ResearchCategories;
 
 public class CardExperimentation extends TheorycraftCard {
@@ -14,21 +14,21 @@ public class CardExperimentation extends TheorycraftCard {
 	
 	@Override
 	public String getLocalizedName() {
-		return new TextComponentTranslation("card.experimentation.name").getUnformattedText();
+		return Language.getInstance().getOrDefault("card.experimentation.name");
 	}
 	
 	@Override
 	public String getLocalizedText() {
-		return new TextComponentTranslation("card.experimentation.text").getUnformattedText();
+		return Language.getInstance().getOrDefault("card.experimentation.text");
 	}
 	
 	@Override
-	public boolean activate(EntityPlayer player, ResearchTableData data) {		
+	public boolean activate(Player player, ResearchTableData data) {		
 		try {
 			String[] s = ResearchCategories.researchCategories.keySet().toArray(new String[] {});
-			String cat = s[ player.getRNG().nextInt(s.length) ];
-			data.addTotal(cat, MathHelper.getInt(player.getRNG(), 15, 30));
-			data.addTotal("BASICS", MathHelper.getInt(player.getRNG(), 1, 10));
+			String cat = s[ player.getRandom().nextInt(s.length) ];
+			data.addTotal(cat, Mth.nextInt(player.getRandom(), 15, 30));
+			data.addTotal("BASICS", Mth.nextInt(player.getRandom(), 1, 10));
 		} catch (Exception e) {
 			return false;
 		}		

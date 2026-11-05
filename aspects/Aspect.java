@@ -5,10 +5,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.translation.I18n;
-
-import org.apache.commons.lang3.text.WordUtils;
+import net.minecraft.locale.Language;
+import net.minecraft.resources.Identifier;
 
 import thaumcraft.api.research.ScanAspect;
 import thaumcraft.api.research.ScanningManager;
@@ -19,7 +17,7 @@ public class Aspect {
 	Aspect[] components;
 	int color;
 	private String chatcolor;
-	ResourceLocation image;
+	Identifier image;
 	int blend;
 	
 	/**
@@ -32,10 +30,10 @@ public class Aspect {
 	 * @param tag the key that will be used to reference this aspect, as well as its latin display name
 	 * @param color color to display the tag in
 	 * @param components the aspects this one is formed from
-	 * @param image ResourceLocation pointing to a 32x32 icon of the aspect
+	 * @param image Identifier pointing to a 32x32 icon of the aspect
 	 * @param blend GL11 blendmode (1 or 771). Used for rendering nodes. Default is 1
 	 */
-	public Aspect(String tag, int color, Aspect[] components, ResourceLocation image, int blend) {
+	public Aspect(String tag, int color, Aspect[] components, Identifier image, int blend) {
 		if (aspects.containsKey(tag)) throw new IllegalArgumentException(tag+" already registered!");
 		this.tag = tag;
 		this.components = components;
@@ -54,14 +52,14 @@ public class Aspect {
 	 * Shortcut constructor I use for the default aspects - you shouldn't be using this.
 	 */
 	public Aspect(String tag, int color, Aspect[] components) {
-		this(tag,color,components,new ResourceLocation("thaumcraft","textures/aspects/"+tag.toLowerCase()+".png"),1);
+		this(tag,color,components,Identifier.fromNamespaceAndPath("thaumcraft","textures/aspects/"+tag.toLowerCase(java.util.Locale.ROOT)+".png"),1);
 	}
 	
 	/**
 	 * Shortcut constructor I use for the default aspects - you shouldn't be using this.
 	 */
 	public Aspect(String tag, int color, Aspect[] components, int blend) {
-		this(tag,color,components,new ResourceLocation("thaumcraft","textures/aspects/"+tag.toLowerCase()+".png"),blend);
+		this(tag,color,components,Identifier.fromNamespaceAndPath("thaumcraft","textures/aspects/"+tag.toLowerCase(java.util.Locale.ROOT)+".png"),blend);
 	}
 
 	/**
@@ -78,11 +76,12 @@ public class Aspect {
 	}
 	
 	public String getName() {
-		return WordUtils.capitalizeFully(tag);
+		if (tag == null || tag.isEmpty()) return tag;
+		return Character.toUpperCase(tag.charAt(0)) + tag.substring(1).toLowerCase(java.util.Locale.ROOT);
 	}
 	
 	public String getLocalizedDescription() {
-		return I18n.translateToLocal("tc.aspect."+tag);
+		return Language.getInstance().getOrDefault("tc.aspect."+tag);
 	}
 	
 	public String getTag() {
@@ -101,7 +100,7 @@ public class Aspect {
 		this.components = components;
 	}
 	
-	public ResourceLocation getImage() {
+	public Identifier getImage() {
 		return image;
 	}
 	

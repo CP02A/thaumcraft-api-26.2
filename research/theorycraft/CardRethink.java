@@ -1,13 +1,13 @@
 package thaumcraft.api.research.theorycraft;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.util.Mth;
+import net.minecraft.locale.Language;
 
 public class CardRethink extends TheorycraftCard {
 	
 	@Override
-	public boolean initialize(EntityPlayer player, ResearchTableData data) {
+	public boolean initialize(Player player, ResearchTableData data) {
 		int a=0;
 		for (String category:data.categoryTotals.keySet()) {
 			a+=data.getTotal(category);
@@ -22,16 +22,16 @@ public class CardRethink extends TheorycraftCard {
 	
 	@Override
 	public String getLocalizedName() {
-		return new TextComponentTranslation("card.rethink.name").getUnformattedText();
+		return Language.getInstance().getOrDefault("card.rethink.name");
 	}
 	
 	@Override
 	public String getLocalizedText() {
-		return new TextComponentTranslation("card.rethink.text").getUnformattedText();
+		return Language.getInstance().getOrDefault("card.rethink.text");
 	}
 
 	@Override
-	public boolean activate(EntityPlayer player, ResearchTableData data) {
+	public boolean activate(Player player, ResearchTableData data) {
 		if (!initialize(player,data)) return false;
 		int a=0;
 		for (String category:data.categoryTotals.keySet()) {
@@ -48,7 +48,7 @@ public class CardRethink extends TheorycraftCard {
 			}
 		}
 		data.bonusDraws++;
-		data.addTotal("BASICS", MathHelper.getInt(player.getRNG(), 1, 10));
+		data.addTotal("BASICS", Mth.nextInt(player.getRandom(), 1, 10));
 		return true;
 	}
 	

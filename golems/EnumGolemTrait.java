@@ -1,28 +1,28 @@
 package thaumcraft.api.golems;
 
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.translation.I18n;
+import net.minecraft.locale.Language;
+import net.minecraft.resources.Identifier;
 
 public enum EnumGolemTrait {
-	SMART(new ResourceLocation("thaumcraft","textures/misc/golem/tag_smart.png")), 
-	DEFT(new ResourceLocation("thaumcraft","textures/misc/golem/tag_deft.png")), 
-	CLUMSY(new ResourceLocation("thaumcraft","textures/misc/golem/tag_clumsy.png")), 
-	FIGHTER(new ResourceLocation("thaumcraft","textures/misc/golem/tag_fighter.png")), 
-	WHEELED(new ResourceLocation("thaumcraft","textures/misc/golem/tag_wheeled.png")), 
-	FLYER(new ResourceLocation("thaumcraft","textures/misc/golem/tag_flyer.png")), 
-	CLIMBER(new ResourceLocation("thaumcraft","textures/misc/golem/tag_climber.png")),
-	HEAVY(new ResourceLocation("thaumcraft","textures/misc/golem/tag_heavy.png")),
-	LIGHT(new ResourceLocation("thaumcraft","textures/misc/golem/tag_light.png")),
-	FRAGILE(new ResourceLocation("thaumcraft","textures/misc/golem/tag_fragile.png")),
-	REPAIR(new ResourceLocation("thaumcraft","textures/misc/golem/tag_repair.png")), 
-	SCOUT(new ResourceLocation("thaumcraft","textures/misc/golem/tag_scout.png")), 
-	ARMORED(new ResourceLocation("thaumcraft","textures/misc/golem/tag_armored.png")), 
-	BRUTAL(new ResourceLocation("thaumcraft","textures/misc/golem/tag_brutal.png")),
-	FIREPROOF(new ResourceLocation("thaumcraft","textures/misc/golem/tag_fireproof.png")),
-	BREAKER(new ResourceLocation("thaumcraft","textures/misc/golem/tag_breaker.png")),
-	HAULER(new ResourceLocation("thaumcraft","textures/misc/golem/tag_hauler.png")),
-	RANGED(new ResourceLocation("thaumcraft","textures/misc/golem/tag_ranged.png")),
-	BLASTPROOF(new ResourceLocation("thaumcraft","textures/misc/golem/tag_blastproof.png"));
+	SMART(Identifier.fromNamespaceAndPath("thaumcraft","textures/misc/golem/tag_smart.png")), 
+	DEFT(Identifier.fromNamespaceAndPath("thaumcraft","textures/misc/golem/tag_deft.png")), 
+	CLUMSY(Identifier.fromNamespaceAndPath("thaumcraft","textures/misc/golem/tag_clumsy.png")), 
+	FIGHTER(Identifier.fromNamespaceAndPath("thaumcraft","textures/misc/golem/tag_fighter.png")), 
+	WHEELED(Identifier.fromNamespaceAndPath("thaumcraft","textures/misc/golem/tag_wheeled.png")), 
+	FLYER(Identifier.fromNamespaceAndPath("thaumcraft","textures/misc/golem/tag_flyer.png")), 
+	CLIMBER(Identifier.fromNamespaceAndPath("thaumcraft","textures/misc/golem/tag_climber.png")),
+	HEAVY(Identifier.fromNamespaceAndPath("thaumcraft","textures/misc/golem/tag_heavy.png")),
+	LIGHT(Identifier.fromNamespaceAndPath("thaumcraft","textures/misc/golem/tag_light.png")),
+	FRAGILE(Identifier.fromNamespaceAndPath("thaumcraft","textures/misc/golem/tag_fragile.png")),
+	REPAIR(Identifier.fromNamespaceAndPath("thaumcraft","textures/misc/golem/tag_repair.png")), 
+	SCOUT(Identifier.fromNamespaceAndPath("thaumcraft","textures/misc/golem/tag_scout.png")), 
+	ARMORED(Identifier.fromNamespaceAndPath("thaumcraft","textures/misc/golem/tag_armored.png")), 
+	BRUTAL(Identifier.fromNamespaceAndPath("thaumcraft","textures/misc/golem/tag_brutal.png")),
+	FIREPROOF(Identifier.fromNamespaceAndPath("thaumcraft","textures/misc/golem/tag_fireproof.png")),
+	BREAKER(Identifier.fromNamespaceAndPath("thaumcraft","textures/misc/golem/tag_breaker.png")),
+	HAULER(Identifier.fromNamespaceAndPath("thaumcraft","textures/misc/golem/tag_hauler.png")),
+	RANGED(Identifier.fromNamespaceAndPath("thaumcraft","textures/misc/golem/tag_ranged.png")),
+	BLASTPROOF(Identifier.fromNamespaceAndPath("thaumcraft","textures/misc/golem/tag_blastproof.png"));
 	
 	static {
 		CLUMSY.opposite = DEFT;
@@ -35,18 +35,18 @@ public enum EnumGolemTrait {
 		ARMORED.opposite = FRAGILE;
 	}
 	
-	public ResourceLocation icon;
+	public Identifier icon;
 	public EnumGolemTrait opposite;
 	
-	private EnumGolemTrait(ResourceLocation icon) {
+	private EnumGolemTrait(Identifier icon) {
 		this.icon = icon;
 	}
 	
 	public String getLocalizedName() {
-		return I18n.translateToLocal("golem.trait."+this.name().toLowerCase());
+		return Language.getInstance().getOrDefault("golem.trait."+this.name().toLowerCase());
 	}
 	
 	public String getLocalizedDescription() {
-		return I18n.translateToLocal("golem.trait.text."+this.name().toLowerCase());
+		return Language.getInstance().getOrDefault("golem.trait.text."+this.name().toLowerCase());
 	}
 }

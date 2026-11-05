@@ -1,9 +1,10 @@
 package thaumcraft.api.casters;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import thaumcraft.api.aspects.Aspect;
 
 public class FocusMediumRoot extends FocusMedium {
@@ -13,9 +14,9 @@ public class FocusMediumRoot extends FocusMedium {
 	}
 	
 	Trajectory[] trajectories=null;
-	RayTraceResult[] targets=null;
+	HitResult[] targets=null;
 	
-	public FocusMediumRoot(Trajectory[] trajectories, RayTraceResult[] targets) {
+	public FocusMediumRoot(Trajectory[] trajectories, HitResult[] targets) {
 		super();
 		this.trajectories = trajectories;
 		this.targets = targets;
@@ -42,7 +43,7 @@ public class FocusMediumRoot extends FocusMedium {
 	}
 
 	@Override
-	public RayTraceResult[] supplyTargets() {
+	public HitResult[] supplyTargets() {
 		return targets;
 	}
 
@@ -51,47 +52,47 @@ public class FocusMediumRoot extends FocusMedium {
 		return trajectories;
 	}
 	
-	public void setupFromCaster (EntityLivingBase caster) {
-		trajectories = new Trajectory[] { new Trajectory(generateSourceVector(caster), caster.getLookVec()) };
-		targets = new RayTraceResult[] { new RayTraceResult(caster) };
+	public void setupFromCaster (LivingEntity caster) {
+		trajectories = new Trajectory[] { new Trajectory(generateSourceVector(caster), caster.getLookAngle()) };
+		targets = new HitResult[] { new EntityHitResult(caster) };
 	}
 	
 	/**
-	 * Useful if you want to cast stuff from something other than the player and where their getLookVec() is often not accurate.
+	 * Useful if you want to cast stuff from something other than the player and where their getLookAngle() is often not accurate.
 	 * @param caster
 	 * @param target
 	 * @param offset use to aim above or below the target
 	 */
-	public void setupFromCasterToTarget(EntityLivingBase caster, Entity target, double offset) {
-		Vec3d sv = generateSourceVector(caster);	
-		double d0 = target.posX - sv.x;
-        double d1 = target.getEntityBoundingBox().minY + (double)(target.height / 2.0F) - sv.y;
-        double d2 = target.posZ - sv.z;
-        Vec3d lv = new Vec3d(d0,d1 + offset,d2);
+	public void setupFromCasterToTarget(LivingEntity caster, Entity target, double offset) {
+		Vec3 sv = generateSourceVector(caster);	
+		double d0 = target.getX() - sv.x;
+        double d1 = target.getBoundingBox().minY + (double)(target.getBbHeight() / 2.0F) - sv.y;
+        double d2 = target.getZ() - sv.z;
+        Vec3 lv = new Vec3(d0,d1 + offset,d2);
 		trajectories = new Trajectory[] { new Trajectory(sv, lv.normalize()) };
-		targets = new RayTraceResult[] { new RayTraceResult(caster) };
+		targets = new HitResult[] { new EntityHitResult(caster) };
 	}
 	
 	/**
-	 * Useful if you want to cast stuff from something other than the player and where their getLookVec() is often not accurate.
+	 * Useful if you want to cast stuff from something other than the player and where their getLookAngle() is often not accurate.
 	 * @param caster
 	 * @param x
 	 * @param y
 	 * @param z
 	 */
-	public void setupFromCasterToTargetLoc(EntityLivingBase caster, double x, double y, double z) {
-		Vec3d sv = generateSourceVector(caster);
+	public void setupFromCasterToTargetLoc(LivingEntity caster, double x, double y, double z) {
+		Vec3 sv = generateSourceVector(caster);
 		double d0 = x - sv.x;
         double d1 = y - sv.y;
         double d2 = z - sv.z;
-        Vec3d lv = new Vec3d(d0,d1,d2);
+        Vec3 lv = new Vec3(d0,d1,d2);
 		trajectories = new Trajectory[] { new Trajectory(sv, lv.normalize()) };
-		targets = new RayTraceResult[] { new RayTraceResult(caster) };
+		targets = new HitResult[] { new EntityHitResult(caster) };
 	}
 	
-	private Vec3d generateSourceVector(EntityLivingBase e) {
-		Vec3d v = e.getPositionVector();		
-		v = v.addVector(0, e.getEyeHeight() - 0.10000000149011612D, 0);		
+	private Vec3 generateSourceVector(LivingEntity e) {
+		Vec3 v = e.position();		
+		v = v.add(0, e.getEyeHeight() - 0.10000000149011612D, 0);		
 		return v;
 	}
 

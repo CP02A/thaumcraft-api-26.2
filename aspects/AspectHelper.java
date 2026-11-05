@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Random;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.TagValueOutput;
 import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.ThaumcraftApi.EntityTagsNBT;
 import thaumcraft.api.ThaumcraftApiHelper;
@@ -75,11 +77,11 @@ public class AspectHelper {
 
 	public static AspectList getEntityAspects(Entity entity) { 		
 		AspectList tags = null;               
-		String entityString = EntityList.getEntityString(entity);
-	    if (entity instanceof EntityPlayer) {
+		String entityString = EntityType.getKey(entity.getType()).toString();
+	    if (entity instanceof Player) {
 	    	tags = new AspectList();
 	    	tags.add(Aspect.MAN, 4);        	
-			Random rand = new Random(((EntityPlayer)entity).getName().hashCode());
+			Random rand = new Random(((Player)entity).getGameProfile().name().hashCode());
 	    	Aspect[] posa = Aspect.aspects.values().toArray(new Aspect[]{});
 			tags.add(posa[rand.nextInt(posa.length)], 15);
 	    	tags.add(posa[rand.nextInt(posa.length)], 15);
@@ -91,11 +93,12 @@ public class AspectHelper {
 				if (et.nbts==null || et.nbts.length==0) {
 					tags = et.aspects;
 				} else {
-					NBTTagCompound tc = new NBTTagCompound();
-					entity.writeToNBT(tc);
+					TagValueOutput out = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, entity.registryAccess());
+					entity.saveWithoutId(out);
+					CompoundTag tc = out.buildResult();
 					for (EntityTagsNBT nbt:et.nbts) {
-						if (tc.hasKey(nbt.name)) {
-							if (!ThaumcraftApiHelper.getNBTDataFromId(tc, tc.getTagId(nbt.name), nbt.name).equals(nbt.value)) continue f1; 
+						if (tc.contains(nbt.name)) {
+							if (!ThaumcraftApiHelper.getNBTDataFromId(tc, tc.get(nbt.name).getId(), nbt.name).equals(nbt.value)) continue f1; 
 						} else {
 							continue f1;
 						}

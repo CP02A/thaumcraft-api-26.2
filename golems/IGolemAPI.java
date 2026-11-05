@@ -1,22 +1,22 @@
 package thaumcraft.api.golems;
 
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
-import net.minecraft.world.World;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 /**
  * Contains functions to allow addon devs to access golem internals
  */
 public interface IGolemAPI {
 	
-	public EntityLivingBase getGolemEntity();
+	public LivingEntity getGolemEntity();
 	
 	public IGolemProperties getProperties();
 	
 	public void setProperties(IGolemProperties prop);
 	
-	public World getGolemWorld();
+	public Level getGolemWorld();
 	
 	/**
 	 * Causes the golem to hold the itemstack supplied.

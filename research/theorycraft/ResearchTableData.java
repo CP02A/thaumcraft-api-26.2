@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.Set;
 import java.util.TreeMap;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import thaumcraft.api.capabilities.IPlayerKnowledge;
 import thaumcraft.api.capabilities.ThaumcraftCapabilities;
 import thaumcraft.api.research.ResearchCategories;
@@ -17,7 +17,7 @@ import thaumcraft.api.research.ResearchEntry.EnumResearchMeta;
 
 public class ResearchTableData 
 {
-	public TileEntity table;
+	public BlockEntity table;
 	public String player;
 	public int inspiration;
 	public int inspirationStart;
@@ -57,12 +57,12 @@ public class ResearchTableData
 		}				
 	}
 	
-	public ResearchTableData(TileEntity tileResearchTable) {
+	public ResearchTableData(BlockEntity tileResearchTable) {
 		table = tileResearchTable;
 	}
 		
-	public ResearchTableData(EntityPlayer player2, TileEntity tileResearchTable) {
-		player = player2.getName();
+	public ResearchTableData(Player player2, BlockEntity tileResearchTable) {
+		player = player2.getGameProfile().name();
 		table = tileResearchTable;
 	}
 
@@ -92,151 +92,151 @@ public class ResearchTableData
 		if (inspiration>inspirationStart) inspiration = inspirationStart;
 	}	
 	
-	public NBTTagCompound serialize() {
-		NBTTagCompound nbt = new NBTTagCompound();
+	public CompoundTag serialize() {
+		CompoundTag nbt = new CompoundTag();
 		
-		nbt.setString("player", player);
-		nbt.setInteger("inspiration", inspiration);
-		nbt.setInteger("inspirationStart", inspirationStart);
-		nbt.setInteger("placedCards", placedCards);
-		nbt.setInteger("bonusDraws", bonusDraws);		
-		nbt.setInteger("aidsChosen", aidsChosen);		
-		nbt.setInteger("penaltyStart", penaltyStart);
+		nbt.putString("player", player);
+		nbt.putInt("inspiration", inspiration);
+		nbt.putInt("inspirationStart", inspirationStart);
+		nbt.putInt("placedCards", placedCards);
+		nbt.putInt("bonusDraws", bonusDraws);		
+		nbt.putInt("aidsChosen", aidsChosen);		
+		nbt.putInt("penaltyStart", penaltyStart);
 		
 		//
-		NBTTagList savedTag = new NBTTagList();
+		ListTag savedTag = new ListTag();
 		for (Long card:savedCards) {
-			NBTTagCompound gt = new NBTTagCompound();
-			gt.setLong("card", card);
-			savedTag.appendTag(gt);
+			CompoundTag gt = new CompoundTag();
+			gt.putLong("card", card);
+			savedTag.add(gt);
 		}		
-		nbt.setTag("savedCards", savedTag);		 		
+		nbt.put("savedCards", savedTag);		 		
 				
 		//
-		NBTTagList categoriesBlockedTag = new NBTTagList();
+		ListTag categoriesBlockedTag = new ListTag();
 		for (String category:categoriesBlocked) {
-			NBTTagCompound gt = new NBTTagCompound();
-			gt.setString("category", category);
-			categoriesBlockedTag.appendTag(gt);
+			CompoundTag gt = new CompoundTag();
+			gt.putString("category", category);
+			categoriesBlockedTag.add(gt);
 		}		
-		nbt.setTag("categoriesBlocked", categoriesBlockedTag);		 
+		nbt.put("categoriesBlocked", categoriesBlockedTag);		 
 		
 		//
-		NBTTagList categoryTotalsTag = new NBTTagList();
+		ListTag categoryTotalsTag = new ListTag();
 		for (String category:categoryTotals.keySet()) {
-			NBTTagCompound gt = new NBTTagCompound();
-			gt.setString("category", category);
-			gt.setInteger("total", categoryTotals.get(category));
-			categoryTotalsTag.appendTag(gt);
+			CompoundTag gt = new CompoundTag();
+			gt.putString("category", category);
+			gt.putInt("total", categoryTotals.get(category));
+			categoryTotalsTag.add(gt);
 		}		
-		nbt.setTag("categoryTotals", categoryTotalsTag);		
+		nbt.put("categoryTotals", categoryTotalsTag);		
 		
 		//
-		NBTTagList aidCardsTag = new NBTTagList();
+		ListTag aidCardsTag = new ListTag();
 		for (String mc:aidCards) {
-			NBTTagCompound gt = new NBTTagCompound();
-			gt.setString("aidCard", mc);
-			aidCardsTag.appendTag(gt);
+			CompoundTag gt = new CompoundTag();
+			gt.putString("aidCard", mc);
+			aidCardsTag.add(gt);
 		}		
-		nbt.setTag("aidCards", aidCardsTag);	
+		nbt.put("aidCards", aidCardsTag);	
 		
 		//
-		NBTTagList cardChoicesTag = new NBTTagList();
+		ListTag cardChoicesTag = new ListTag();
 		for (CardChoice mc:cardChoices) {
-			NBTTagCompound gt = serializeCardChoice(mc);
-			cardChoicesTag.appendTag(gt);
+			CompoundTag gt = serializeCardChoice(mc);
+			cardChoicesTag.add(gt);
 		}		
-		nbt.setTag("cardChoices", cardChoicesTag);	
+		nbt.put("cardChoices", cardChoicesTag);	
 		
-		if (lastDraw!=null) nbt.setTag("lastDraw", serializeCardChoice(lastDraw));
+		if (lastDraw!=null) nbt.put("lastDraw", serializeCardChoice(lastDraw));
 				
 		return nbt;
 	}
 	
-	public NBTTagCompound serializeCardChoice(CardChoice mc) {
-		NBTTagCompound nbt = new NBTTagCompound();	
-		nbt.setString("cardChoice", mc.key);
-		nbt.setBoolean("aid", mc.fromAid); 
-		nbt.setBoolean("select", mc.selected);
+	public CompoundTag serializeCardChoice(CardChoice mc) {
+		CompoundTag nbt = new CompoundTag();	
+		nbt.putString("cardChoice", mc.key);
+		nbt.putBoolean("aid", mc.fromAid); 
+		nbt.putBoolean("select", mc.selected);
 		try {
-			nbt.setTag("cardNBT", mc.card.serialize());
+			nbt.put("cardNBT", mc.card.serialize());
 		} catch (Exception e) {	}
 		return nbt;
 	}
 	
-	public void deserialize(NBTTagCompound nbt) {	
+	public void deserialize(CompoundTag nbt) {	
 		if (nbt == null) return;	
-		inspiration = nbt.getInteger("inspiration");
-		inspirationStart = nbt.getInteger("inspirationStart");
-		placedCards = nbt.getInteger("placedCards");
-		bonusDraws = nbt.getInteger("bonusDraws");
-		aidsChosen = nbt.getInteger("aidsChosen");
-		penaltyStart = nbt.getInteger("penaltyStart");
-		player=nbt.getString("player");
+		inspiration = nbt.getIntOr("inspiration", 0);
+		inspirationStart = nbt.getIntOr("inspirationStart", 0);
+		placedCards = nbt.getIntOr("placedCards", 0);
+		bonusDraws = nbt.getIntOr("bonusDraws", 0);
+		aidsChosen = nbt.getIntOr("aidsChosen", 0);
+		penaltyStart = nbt.getIntOr("penaltyStart", 0);
+		player=nbt.getStringOr("player", "");
 				
 		//
-		NBTTagList savedTag = nbt.getTagList("savedCards", (byte)10);
+		ListTag savedTag = nbt.getListOrEmpty("savedCards");
 		savedCards = new ArrayList<Long>();
-		for (int x=0;x<savedTag.tagCount();x++) {
-			NBTTagCompound nbtdata = (NBTTagCompound) savedTag.getCompoundTagAt(x);
-			savedCards.add(nbtdata.getLong("card"));
+		for (int x=0;x<savedTag.size();x++) {
+			CompoundTag nbtdata = (CompoundTag) savedTag.getCompoundOrEmpty(x);
+			savedCards.add(nbtdata.getLongOr("card", 0L));
 		}
 		
 		//
-		NBTTagList categoriesBlockedTag = nbt.getTagList("categoriesBlocked", (byte)10);
+		ListTag categoriesBlockedTag = nbt.getListOrEmpty("categoriesBlocked");
 		categoriesBlocked = new ArrayList<String>();
-		for (int x=0;x<categoriesBlockedTag.tagCount();x++) {
-			NBTTagCompound nbtdata = (NBTTagCompound) categoriesBlockedTag.getCompoundTagAt(x);
-			categoriesBlocked.add(nbtdata.getString("category"));
+		for (int x=0;x<categoriesBlockedTag.size();x++) {
+			CompoundTag nbtdata = (CompoundTag) categoriesBlockedTag.getCompoundOrEmpty(x);
+			categoriesBlocked.add(nbtdata.getStringOr("category", ""));
 		}
 		
 		//
-		NBTTagList categoryTotalsTag = nbt.getTagList("categoryTotals", (byte)10);
+		ListTag categoryTotalsTag = nbt.getListOrEmpty("categoryTotals");
 		categoryTotals = new TreeMap<String,Integer>();
-		for (int x=0;x<categoryTotalsTag.tagCount();x++) {
-			NBTTagCompound nbtdata = (NBTTagCompound) categoryTotalsTag.getCompoundTagAt(x);
-			categoryTotals.put(nbtdata.getString("category"), nbtdata.getInteger("total"));
+		for (int x=0;x<categoryTotalsTag.size();x++) {
+			CompoundTag nbtdata = (CompoundTag) categoryTotalsTag.getCompoundOrEmpty(x);
+			categoryTotals.put(nbtdata.getStringOr("category", ""), nbtdata.getIntOr("total", 0));
 		}
 		
 		//
-		NBTTagList aidCardsTag = nbt.getTagList("aidCards", (byte)10);
+		ListTag aidCardsTag = nbt.getListOrEmpty("aidCards");
 		aidCards = new ArrayList<String>();
-		for (int x=0;x<aidCardsTag.tagCount();x++) {
-			NBTTagCompound nbtdata = (NBTTagCompound) aidCardsTag.getCompoundTagAt(x);
-			aidCards.add(nbtdata.getString("aidCard"));
+		for (int x=0;x<aidCardsTag.size();x++) {
+			CompoundTag nbtdata = (CompoundTag) aidCardsTag.getCompoundOrEmpty(x);
+			aidCards.add(nbtdata.getStringOr("aidCard", ""));
 		}
 		
 		//
 		
-		EntityPlayer pe = null;		
-		if (this.table!=null && table.getWorld()!=null && !table.getWorld().isRemote) 
-			pe = this.table.getWorld().getPlayerEntityByName(player);
+		Player pe = null;		
+		if (this.table!=null && table.getLevel()!=null && !table.getLevel().isClientSide() && table.getLevel().getServer()!=null) 
+			pe = this.table.getLevel().getServer().getPlayerList().getPlayerByName(player);
 			
-		NBTTagList cardChoicesTag = nbt.getTagList("cardChoices", (byte)10);
+		ListTag cardChoicesTag = nbt.getListOrEmpty("cardChoices");
 		cardChoices = new ArrayList<CardChoice>();
-		for (int x=0;x<cardChoicesTag.tagCount();x++) {			
-			NBTTagCompound nbtdata = (NBTTagCompound) cardChoicesTag.getCompoundTagAt(x);			
+		for (int x=0;x<cardChoicesTag.size();x++) {			
+			CompoundTag nbtdata = (CompoundTag) cardChoicesTag.getCompoundOrEmpty(x);			
 			CardChoice cc = deserializeCardChoice(nbtdata);
 			if (cc!=null) cardChoices.add(cc);
 		}
 		
-		lastDraw = deserializeCardChoice(nbt.getCompoundTag("lastDraw"));
+		lastDraw = deserializeCardChoice(nbt.getCompoundOrEmpty("lastDraw"));
 		
 	}
 	
-	public CardChoice deserializeCardChoice(NBTTagCompound nbt) {	
+	public CardChoice deserializeCardChoice(CompoundTag nbt) {	
 		if (nbt == null) return null;	
-		String key = nbt.getString("cardChoice");			
-		TheorycraftCard tc=generateCardWithNBT(nbt.getString("cardChoice"), nbt.getCompoundTag("cardNBT"));				
+		String key = nbt.getStringOr("cardChoice", "");			
+		TheorycraftCard tc=generateCardWithNBT(nbt.getStringOr("cardChoice", ""), nbt.getCompoundOrEmpty("cardNBT"));				
 		if (tc==null) return null;
-		return new CardChoice(key,tc,nbt.getBoolean("aid"),nbt.getBoolean("select"));
+		return new CardChoice(key,tc,nbt.getBooleanOr("aid", false),nbt.getBooleanOr("select", false));
 	}
 	
 	private boolean isCategoryBlocked(String cat) {
 		return this.categoriesBlocked.contains(cat);
 	}
 	
-	public void drawCards(int draw, EntityPlayer pe) {
+	public void drawCards(int draw, Player pe) {
 		
 		if (draw==3) {
 			if (bonusDraws>0) {
@@ -246,15 +246,15 @@ public class ResearchTableData
 			}
 		}
 		cardChoices.clear();
-		this.player=pe.getName();
+		this.player=pe.getGameProfile().name();
 		ArrayList<String> availCats = getAvailableCategories(pe);
 		ArrayList<String> drawnCards = new ArrayList<>();
 		boolean aidDrawn=false;
 		int failsafe=0;
 		while (draw>0 && failsafe<10000) {
 			failsafe++;
-			if (!aidDrawn && !aidCards.isEmpty() && pe.getRNG().nextFloat()<=.25) {
-				int idx = pe.getRNG().nextInt(aidCards.size());
+			if (!aidDrawn && !aidCards.isEmpty() && pe.getRandom().nextFloat()<=.25) {
+				int idx = pe.getRandom().nextInt(aidCards.size());
 				String key = aidCards.get(idx);				
 				TheorycraftCard card = generateCard(key,-1,pe);
 				if (card==null || card.getInspirationCost()>inspiration || isCategoryBlocked(card.getResearchCategory())) continue;		
@@ -266,7 +266,7 @@ public class ResearchTableData
 			} else {
 				try {
 					String[] cards = TheorycraftManager.cards.keySet().toArray(new String[]{});
-					int idx = pe.getRNG().nextInt(cards.length);
+					int idx = pe.getRandom().nextInt(cards.length);
 					TheorycraftCard card = generateCard(cards[idx],-1,pe);
 					if (card==null || card.isAidOnly() || card.getInspirationCost()>inspiration) continue;
 					if (card.getResearchCategory()!=null) {
@@ -292,16 +292,16 @@ public class ResearchTableData
 		}
 	}
 	
-	private TheorycraftCard generateCard(String key, long seed, EntityPlayer pe) {
+	private TheorycraftCard generateCard(String key, long seed, Player pe) {
 		if (key==null) return null;
 		Class<TheorycraftCard> tcc = TheorycraftManager.cards.get(key);
 		if (tcc==null) return null;
 		TheorycraftCard tc=null;
 		try {
-			tc = tcc.newInstance();
+			tc = tcc.getDeclaredConstructor().newInstance();
 			if (seed<0)
 				if (pe!=null)
-					tc.setSeed(pe.getRNG().nextLong());
+					tc.setSeed(pe.getRandom().nextLong());
 				else
 					tc.setSeed(System.nanoTime());
 			else
@@ -311,19 +311,19 @@ public class ResearchTableData
 		return tc;
 	}
 	
-	private TheorycraftCard generateCardWithNBT(String key, NBTTagCompound nbt) {
+	private TheorycraftCard generateCardWithNBT(String key, CompoundTag nbt) {
 		if (key==null) return null;
 		Class<TheorycraftCard> tcc = TheorycraftManager.cards.get(key);
 		if (tcc==null) return null;
 		TheorycraftCard tc=null;
 		try {
-			tc = tcc.newInstance();
+			tc = tcc.getDeclaredConstructor().newInstance();
 			tc.deserialize(nbt);
 		} catch (Exception e) {  }
 		return tc;
 	}
 	
-	public void initialize(EntityPlayer player1, Set<String> aids) {
+	public void initialize(Player player1, Set<String> aids) {
 		inspirationStart=getAvailableInspiration(player1);
 		inspiration= inspirationStart - aids.size();
 		
@@ -338,7 +338,7 @@ public class ResearchTableData
 	}
 	
 	
-	public ArrayList<String> getAvailableCategories(EntityPlayer player) {
+	public ArrayList<String> getAvailableCategories(Player player) {
 		ArrayList<String> cats = new ArrayList<String>();
 		for(String rck: ResearchCategories.researchCategories.keySet()) {
 			ResearchCategory rc = ResearchCategories.getResearchCategory(rck);
@@ -350,7 +350,7 @@ public class ResearchTableData
 		return cats;
 	}
 	
-	public static int getAvailableInspiration(EntityPlayer player) {
+	public static int getAvailableInspiration(Player player) {
 		float tot = 5;
 		IPlayerKnowledge knowledge = ThaumcraftCapabilities.getKnowledge(player);
 		for (String s:knowledge.getResearchList()) {

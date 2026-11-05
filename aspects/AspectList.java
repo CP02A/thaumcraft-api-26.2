@@ -3,9 +3,9 @@ package thaumcraft.api.aspects;
 import java.io.Serializable;
 import java.util.LinkedHashMap;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.world.item.ItemStack;
 
 public class AspectList implements Serializable {
 	
@@ -222,30 +222,21 @@ public class AspectList implements Serializable {
 	/**
 	 * Reads the list of aspects from nbt
 	 * @param nbttagcompound
-	 * @return 
 	 */
-	public void readFromNBT(NBTTagCompound nbttagcompound)
+	public void readFromNBT(CompoundTag nbttagcompound)
     {
-        aspects.clear();
-        NBTTagList tlist = nbttagcompound.getTagList("Aspects",(byte)10);
-		for (int j = 0; j < tlist.tagCount(); j++) {
-			NBTTagCompound rs = (NBTTagCompound) tlist.getCompoundTagAt(j);
-			if (rs.hasKey("key")) {
-				add(	Aspect.getAspect(rs.getString("key")),
-						rs.getInteger("amount"));
-			}
-		}
+		readFromNBT(nbttagcompound, "Aspects");
     }
 	
-	public void readFromNBT(NBTTagCompound nbttagcompound, String label)
+	public void readFromNBT(CompoundTag nbttagcompound, String label)
     {
         aspects.clear();
-        NBTTagList tlist = nbttagcompound.getTagList(label,(byte)10);
-		for (int j = 0; j < tlist.tagCount(); j++) {
-			NBTTagCompound rs = (NBTTagCompound) tlist.getCompoundTagAt(j);
-			if (rs.hasKey("key")) {
-				add(	Aspect.getAspect(rs.getString("key")),
-						rs.getInteger("amount"));
+        ListTag tlist = nbttagcompound.getListOrEmpty(label);
+		for (int j = 0; j < tlist.size(); j++) {
+			CompoundTag rs = tlist.getCompoundOrEmpty(j);
+			if (rs.contains("key")) {
+				Aspect aspect = Aspect.getAspect(rs.getStringOr("key", ""));
+				if (aspect != null) add(aspect, rs.getIntOr("amount", 0));
 			}
 		}
     }
@@ -253,32 +244,23 @@ public class AspectList implements Serializable {
 	/**
 	 * Writes the list of aspects to nbt
 	 * @param nbttagcompound
-	 * @return 
 	 */
-	public void writeToNBT(NBTTagCompound nbttagcompound)
+	public void writeToNBT(CompoundTag nbttagcompound)
     {
-        NBTTagList tlist = new NBTTagList();
-		nbttagcompound.setTag("Aspects", tlist);
-		for (Aspect aspect : getAspects())
-			if (aspect != null) {
-				NBTTagCompound f = new NBTTagCompound();
-				f.setString("key", aspect.getTag());
-				f.setInteger("amount", getAmount(aspect));
-				tlist.appendTag(f);
-			}
+		writeToNBT(nbttagcompound, "Aspects");
     }
 	
-	public void writeToNBT(NBTTagCompound nbttagcompound, String label)
+	public void writeToNBT(CompoundTag nbttagcompound, String label)
     {
-        NBTTagList tlist = new NBTTagList();
-		nbttagcompound.setTag(label, tlist);
+        ListTag tlist = new ListTag();
 		for (Aspect aspect : getAspects())
 			if (aspect != null) {
-				NBTTagCompound f = new NBTTagCompound();
-				f.setString("key", aspect.getTag());
-				f.setInteger("amount", getAmount(aspect));
-				tlist.appendTag(f);
+				CompoundTag f = new CompoundTag();
+				f.putString("key", aspect.getTag());
+				f.putInt("amount", getAmount(aspect));
+				tlist.add(f);
 			}
+		nbttagcompound.put(label, tlist);
     }
 	
 }

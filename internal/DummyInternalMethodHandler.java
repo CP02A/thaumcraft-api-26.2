@@ -1,9 +1,10 @@
 package thaumcraft.api.internal;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.capabilities.IPlayerKnowledge.EnumKnowledgeType;
 import thaumcraft.api.capabilities.IPlayerWarp.EnumWarpType;
@@ -16,13 +17,13 @@ import thaumcraft.api.research.ResearchCategory;
 public class DummyInternalMethodHandler implements IInternalMethodHandler {
 	
 	@Override
-	public boolean completeResearch(EntityPlayer player, String researchkey) {
+	public boolean completeResearch(Player player, String researchkey) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public void addWarpToPlayer(EntityPlayer player, int amount, EnumWarpType type) {
+	public void addWarpToPlayer(Player player, int amount, EnumWarpType type) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -40,49 +41,49 @@ public class DummyInternalMethodHandler implements IInternalMethodHandler {
 	}
 
 	@Override
-	public float drainVis(World world, BlockPos pos, float amount, boolean simulate) {
+	public float drainVis(Level world, BlockPos pos, float amount, boolean simulate) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
-	public float drainFlux(World world, BlockPos pos, float amount, boolean simulate) {
+	public float drainFlux(Level world, BlockPos pos, float amount, boolean simulate) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
-	public void addVis(World world, BlockPos pos, float amount) {
+	public void addVis(Level world, BlockPos pos, float amount) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void addFlux(World world, BlockPos pos, float amount, boolean showEffect) {
+	public void addFlux(Level world, BlockPos pos, float amount, boolean showEffect) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public float getTotalAura(World world, BlockPos pos) {
+	public float getTotalAura(Level world, BlockPos pos) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
-	public float getVis(World world, BlockPos pos) {
+	public float getVis(Level world, BlockPos pos) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
-	public float getFlux(World world, BlockPos pos) {
+	public float getFlux(Level world, BlockPos pos) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
-	public int getAuraBase(World world, BlockPos pos) {
+	public int getAuraBase(Level world, BlockPos pos) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
@@ -100,19 +101,19 @@ public class DummyInternalMethodHandler implements IInternalMethodHandler {
 	}
 
 	@Override
-	public ISealEntity getSealEntity(int dim, SealPos pos) {
+	public ISealEntity getSealEntity(ResourceKey<Level> dim, SealPos pos) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void addGolemTask(int dim, Task task) {
+	public void addGolemTask(ResourceKey<Level> dim, Task task) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public boolean shouldPreserveAura(World world, EntityPlayer player,
+	public boolean shouldPreserveAura(Level world, Player player,
 			BlockPos pos) {
 		// TODO Auto-generated method stub
 		return false;
@@ -125,25 +126,25 @@ public class DummyInternalMethodHandler implements IInternalMethodHandler {
 	}
 
 	@Override
-	public boolean doesPlayerHaveRequisites(EntityPlayer player, String researchkey) {
+	public boolean doesPlayerHaveRequisites(Player player, String researchkey) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public boolean addKnowledge(EntityPlayer player, EnumKnowledgeType type, ResearchCategory field, int amount) {
+	public boolean addKnowledge(Player player, EnumKnowledgeType type, ResearchCategory field, int amount) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public boolean progressResearch(EntityPlayer player, String researchkey) {
+	public boolean progressResearch(Player player, String researchkey) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public int getActualWarp(EntityPlayer player) {
+	public int getActualWarp(Player player) {
 		// TODO Auto-generated method stub
 		return 0;
 	}

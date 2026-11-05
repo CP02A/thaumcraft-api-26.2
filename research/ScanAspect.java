@@ -1,11 +1,11 @@
 package thaumcraft.api.research;
 
-import net.minecraft.block.Block;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectHelper;
@@ -28,22 +28,22 @@ public class ScanAspect implements IScanThing {
 	}
 
 	@Override
-	public boolean checkThing(EntityPlayer player, Object obj) {	
+	public boolean checkThing(Player player, Object obj) {	
 		if (obj == null) return false;
 		
 		AspectList al = null;		
 		
-		if (obj instanceof Entity && !(obj instanceof EntityItem)) {
+		if (obj instanceof Entity && !(obj instanceof ItemEntity)) {
 			al = AspectHelper.getEntityAspects((Entity) obj);
 		} else {
 			ItemStack is = null;		
 			if (obj instanceof ItemStack) 
 				is = (ItemStack) obj;
-			if (obj instanceof EntityItem && ((EntityItem)obj).getItem()!=null) 
-				is = ((EntityItem)obj).getItem();
+			if (obj instanceof ItemEntity && ((ItemEntity)obj).getItem()!=null) 
+				is = ((ItemEntity)obj).getItem();
 			if (obj instanceof BlockPos) {
-				Block b = player.world.getBlockState((BlockPos) obj).getBlock();
-				is = new ItemStack(b,1,b.getMetaFromState(player.world.getBlockState((BlockPos) obj)));
+				Block b = player.level().getBlockState((BlockPos) obj).getBlock();
+				is = new ItemStack(b,1);
 			}
 			
 			if (is!=null) {
@@ -55,14 +55,14 @@ public class ScanAspect implements IScanThing {
 	}
 	
 	@Override
-	public void onSuccess(EntityPlayer player, Object obj) {
+	public void onSuccess(Player player, Object obj) {
 		ThaumcraftApi.internalMethods.addKnowledge(player, EnumKnowledgeType.OBSERVATION, ResearchCategories.getResearchCategory("AUROMANCY"), 1);
 		ThaumcraftApi.internalMethods.addKnowledge(player, EnumKnowledgeType.OBSERVATION, ResearchCategories.getResearchCategory("BASICS"), 1);
 		ThaumcraftApi.internalMethods.addKnowledge(player, EnumKnowledgeType.OBSERVATION, ResearchCategories.getResearchCategory("ALCHEMY"), 1);
 	}
 	
 	@Override
-	public String getResearchKey(EntityPlayer player, Object object) {
+	public String getResearchKey(Player player, Object object) {
 		return research;
 	}
 	

@@ -2,14 +2,18 @@ package thaumcraft.api.research;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.oredict.OreDictionary;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
+import thaumcraft.api.ThaumcraftApiHelper;
 import thaumcraft.api.internal.CommonInternals;
 
+/**
+ * The ore dictionary has been replaced by item tags. This matches any item (or the item form of any block) 
+ * that is in one of the given item tags.
+ */
 public class ScanOreDictionary implements IScanThing {
 	
 	String research;	
@@ -17,25 +21,29 @@ public class ScanOreDictionary implements IScanThing {
 	
 	public ConcurrentHashMap<Integer,Boolean> cache = new ConcurrentHashMap<>();
 
+	/**
+	 * @param research
+	 * @param entries item tag ids, optionally prefixed with #, for example "c:ingots/iron"
+	 */
 	public ScanOreDictionary(String research, String ... entries) {
 		this.research = research;
 		this.entries = entries;
 	}
 	
 	@Override
-	public boolean checkThing(EntityPlayer player, Object obj) {	
+	public boolean checkThing(Player player, Object obj) {	
 		ItemStack stack = null;
 		if (obj!=null) {
 			if (obj instanceof BlockPos) {
-				IBlockState state = player.world.getBlockState((BlockPos) obj);
-				stack = state.getBlock().getItem(player.world, (BlockPos) obj, state);			
+				BlockState state = player.level().getBlockState((BlockPos) obj);
+				stack = state.getCloneItemStack(player.level(), (BlockPos) obj, false);			
 			}
 			else
 			if (obj instanceof ItemStack) 
 				stack = (ItemStack) obj;
 			else
-			if (obj instanceof EntityItem && ((EntityItem)obj).getItem()!=null) 
-				stack = ((EntityItem)obj).getItem();
+			if (obj instanceof ItemEntity && ((ItemEntity)obj).getItem()!=null) 
+				stack = ((ItemEntity)obj).getItem();
 		}
 		
 		if (stack!=null && !stack.isEmpty()) {			
@@ -44,13 +52,10 @@ public class ScanOreDictionary implements IScanThing {
 				return cache.get(hid);
 			}
 			
-			int[] ids = OreDictionary.getOreIDs(stack);
 			for (String entry:entries) {
-				for (int id:ids) {
-					if (OreDictionary.getOreName(id).equals(entry)) {
-						synchronized(cache) { cache.put(hid,true); }
-						return true;
-					}
+				if (stack.is(ThaumcraftApiHelper.itemTag(entry))) {
+					synchronized(cache) { cache.put(hid,true); }
+					return true;
 				}
 			}
 			synchronized(cache) { cache.put(hid,false); }
@@ -60,7 +65,7 @@ public class ScanOreDictionary implements IScanThing {
 	}
 	
 	@Override
-	public String getResearchKey(EntityPlayer player, Object object) {		
+	public String getResearchKey(Player player, Object object) {		
 		return research;
 	}
 }

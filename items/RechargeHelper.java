@@ -1,11 +1,11 @@
 package thaumcraft.api.items;
 
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagInt;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import thaumcraft.api.ThaumcraftApiHelper;
 import thaumcraft.api.aura.AuraHelper;
 
 /**
@@ -13,6 +13,7 @@ import thaumcraft.api.aura.AuraHelper;
  * @author Azanor
  * 
  * Helper methods to manipulate charge in items that use IRechargable.
+ * The charge is stored as an int under {@link #NBT_TAG} in the item's custom data component.
  * 
  */
 public class RechargeHelper {
@@ -30,7 +31,7 @@ public class RechargeHelper {
 	 * @param amt
 	 * @return how much charge was actually added
 	 */
-	public static float rechargeItem(World world, ItemStack is, BlockPos pos, EntityPlayer player, int amt) {	
+	public static float rechargeItem(Level world, ItemStack is, BlockPos pos, Player player, int amt) {	
 		if (is==null || is.isEmpty() || !(is.getItem() instanceof IRechargable)) return 0;		
 		IRechargable chargeItem = (IRechargable)is.getItem();		
 		if (player!=null && AuraHelper.shouldPreserveAura(world,player,pos)) return 0;				
@@ -51,7 +52,7 @@ public class RechargeHelper {
 	 * @param amt
 	 * @return how much charge was actually added
 	 */
-	public static float rechargeItemBlindly(ItemStack is, EntityPlayer player, int amt) {	
+	public static float rechargeItemBlindly(ItemStack is, Player player, int amt) {	
 		if (is==null || is.isEmpty() || !(is.getItem() instanceof IRechargable)) return 0;		
 		IRechargable chargeItem = (IRechargable)is.getItem();		
 		amt = (int) Math.min(amt, chargeItem.getMaxCharge(is,player) - getCharge(is));		
@@ -59,11 +60,11 @@ public class RechargeHelper {
 		return amt;
 	}
 	
-	private static void addCharge(ItemStack is, EntityLivingBase player, int amt) {
+	private static void addCharge(ItemStack is, LivingEntity player, int amt) {
 		if (is==null || is.isEmpty() || !(is.getItem() instanceof IRechargable)) return;
 		IRechargable chargeItem = (IRechargable)is.getItem();
 		int amount = Math.min(chargeItem.getMaxCharge(is,player), amt + getCharge(is));
-		is.setTagInfo(NBT_TAG, new NBTTagInt(amount));
+		ThaumcraftApiHelper.updateCustomData(is, tag -> tag.putInt(NBT_TAG, amount));
 	}
 	
 	/**
@@ -72,8 +73,7 @@ public class RechargeHelper {
 	 */
 	public static int getCharge(ItemStack is) {
 		if (is==null || is.isEmpty() || !(is.getItem() instanceof IRechargable)) return -1;
-		if (is.hasTagCompound()) return is.getTagCompound().getInteger(NBT_TAG);
-		return 0;
+		return ThaumcraftApiHelper.getCustomData(is).getIntOr(NBT_TAG, 0);
 	}
 	
 	/**
@@ -81,7 +81,7 @@ public class RechargeHelper {
 	 * @param is
 	 * @return return charge level as a float (with 1 being full)
 	 */
-	public static float getChargePercentage(ItemStack is, EntityPlayer player) {
+	public static float getChargePercentage(ItemStack is, Player player) {
 		if (is==null || is.isEmpty() || !(is.getItem() instanceof IRechargable)) return -1;
 		float c = getCharge(is);
 		float m =  ((IRechargable)is.getItem()).getMaxCharge(is, player);
@@ -95,13 +95,14 @@ public class RechargeHelper {
 	 * @param amt
 	 * @return if the item had the charge removed
 	 */
-	public static boolean consumeCharge(ItemStack is, EntityLivingBase player, int amt) {
+	public static boolean consumeCharge(ItemStack is, LivingEntity player, int amt) {
 		if (is==null || is.isEmpty() || !(is.getItem() instanceof IRechargable)) return false;
-		if (is.hasTagCompound()) {
-			int charge = is.getTagCompound().getInteger(NBT_TAG);
+		if (ThaumcraftApiHelper.hasCustomData(is)) {
+			int charge = ThaumcraftApiHelper.getCustomData(is).getIntOr(NBT_TAG, 0);
 			if (charge>=amt) {
 				charge -= amt;
-				is.setTagInfo(NBT_TAG, new NBTTagInt(charge));
+				final int c = charge;
+				ThaumcraftApiHelper.updateCustomData(is, tag -> tag.putInt(NBT_TAG, c));
 				return true;
 			}
 		}

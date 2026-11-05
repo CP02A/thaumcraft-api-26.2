@@ -1,9 +1,10 @@
 package thaumcraft.api.research;
 
-import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 
 public class ScanBlock implements IScanThing {
 	
@@ -11,7 +12,7 @@ public class ScanBlock implements IScanThing {
 	Block[] blocks;
 	
 	public ScanBlock(Block block) {
-		this("!"+block.getRegistryName().toString(),new Block[] {block});
+		this("!"+BuiltInRegistries.BLOCK.getKey(block).toString(),new Block[] {block});
 	}
 
 	public ScanBlock(String research, Block ... blocks) {
@@ -22,17 +23,17 @@ public class ScanBlock implements IScanThing {
 	}		
 	
 	@Override
-	public boolean checkThing(EntityPlayer player, Object obj) {		
+	public boolean checkThing(Player player, Object obj) {		
 		if (obj!=null && obj instanceof BlockPos) {
 			for (Block block:blocks) 
-				if (player.world.getBlockState((BlockPos) obj).getBlock()==block) 
+				if (player.level().getBlockState((BlockPos) obj).getBlock()==block) 
 					return true;
 		}
 		return false;
 	}
 	
 	@Override
-	public String getResearchKey(EntityPlayer player, Object object) {		
+	public String getResearchKey(Player player, Object object) {		
 		return research;
 	}
 }

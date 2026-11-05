@@ -1,7 +1,13 @@
 package thaumcraft.api.items;
 
-import net.minecraft.item.Item;
+import net.minecraft.world.item.Item;
 
+/**
+ * Static references to Thaumcraft's items, filled in by Thaumcraft during registration.
+ * <p>
+ * Fields documented with a list of variant names (for example {@link #nuggets}) were metadata items in 1.12.
+ * Metadata no longer exists, so each variant will become a separate item once Thaumcraft flattens them.
+ */
 public class ItemsTC {
 	
 	//Curios
@@ -146,7 +152,7 @@ public class ItemsTC {
 	public static Item golemPlacer;
 	
 	/** 
-	 * damage 0 = blank seal
+	 * the blank seal
 	 * use GolemHelper.getSealStack to return an itemstack of a specific seal 
 	 * **/
 	public static Item seals;

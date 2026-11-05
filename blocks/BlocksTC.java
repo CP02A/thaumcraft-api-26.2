@@ -2,9 +2,9 @@ package thaumcraft.api.blocks;
 
 import java.util.HashMap;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockSlab;
-import net.minecraft.item.EnumDyeColor;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SlabBlock;
 
 public class BlocksTC {
 
@@ -44,18 +44,18 @@ public class BlocksTC {
 	public static Block stairsSilverwood;
 	public static Block stairsGreatwood;
 	public static Block stairsEldritch;
-	public static BlockSlab slabGreatwood;
-	public static BlockSlab slabSilverwood;
-	public static BlockSlab slabArcaneStone;
-	public static BlockSlab slabArcaneBrick;
-	public static BlockSlab slabAncient;
-	public static BlockSlab slabEldritch;
-	public static BlockSlab doubleSlabGreatwood;
-	public static BlockSlab doubleSlabSilverwood;
-	public static BlockSlab doubleSlabArcaneStone;
-	public static BlockSlab doubleSlabArcaneBrick;
-	public static BlockSlab doubleSlabAncient;
-	public static BlockSlab doubleSlabEldritch;
+	public static SlabBlock slabGreatwood;
+	public static SlabBlock slabSilverwood;
+	public static SlabBlock slabArcaneStone;
+	public static SlabBlock slabArcaneBrick;
+	public static SlabBlock slabAncient;
+	public static SlabBlock slabEldritch;
+	public static SlabBlock doubleSlabGreatwood;
+	public static SlabBlock doubleSlabSilverwood;
+	public static SlabBlock doubleSlabArcaneStone;
+	public static SlabBlock doubleSlabArcaneBrick;
+	public static SlabBlock doubleSlabAncient;
+	public static SlabBlock doubleSlabEldritch;
 	public static Block taintCrust;
 	public static Block taintSoil;
 	public static Block taintRock;
@@ -103,9 +103,9 @@ public class BlocksTC {
 	public static Block matrixCost;
 	public static Block visBattery;
 	
-	public static HashMap<EnumDyeColor,Block> candles = new HashMap<>();
-	public static HashMap<EnumDyeColor,Block> banners = new HashMap<>();
-	public static HashMap<EnumDyeColor,Block> nitor = new HashMap<>();
+	public static HashMap<DyeColor,Block> candles = new HashMap<>();
+	public static HashMap<DyeColor,Block> banners = new HashMap<>();
+	public static HashMap<DyeColor,Block> nitor = new HashMap<>();
 	
 	public static Block bannerCrimsonCult;
 	

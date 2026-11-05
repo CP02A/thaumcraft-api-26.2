@@ -1,42 +1,32 @@
 package thaumcraft.api.potions;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.potion.Potion;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.core.Holder;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.entity.LivingEntity;
 
-public class PotionVisExhaust extends Potion
+/**
+ * Vis exhaustion effect. Registered by Thaumcraft as {@code thaumcraft:vis_exhaust}; its icon is the
+ * {@code mob_effect} sprite of that name and its display name the translation key derived from the registry name.
+ */
+public class PotionVisExhaust extends MobEffect
 {
-    public static Potion instance = null; // will be instantiated at runtime
-    private int statusIconIndex = -1;
+    /** The registered effect; filled in by Thaumcraft at registration time. */
+    public static Holder<MobEffect> instance = null; // will be instantiated at runtime
     
+    /**
+     * @param par2 unused: this effect is always harmful
+     * @param par3 the effect color
+     */
     public PotionVisExhaust(boolean par2, int par3)
     {
-    	super(par2,par3);
-    	setIconIndex(5, 1);
-    	setPotionName("potion.vis_exhaust");
-    	setEffectiveness(0.25D);
+    	super(MobEffectCategory.HARMFUL, par3);
     }
-    
+	
 	@Override
-	public boolean isBadEffect() {
+	public boolean applyEffectTick(ServerLevel level, LivingEntity target, int par2) {
 		return true;
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public int getStatusIconIndex() {
-		Minecraft.getMinecraft().renderEngine.bindTexture(rl);
-		return super.getStatusIconIndex();
-	}
-	
-	static final ResourceLocation rl = new ResourceLocation("thaumcraft","textures/misc/potions.png");
-	
-	@Override
-	public void performEffect(EntityLivingBase target, int par2) {
-		
 	}
     
     

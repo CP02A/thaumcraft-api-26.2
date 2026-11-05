@@ -1,7 +1,7 @@
 package thaumcraft.api.crafting;
 
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 public interface IInfusionStabiliserExt extends IInfusionStabiliser {
 	
@@ -13,7 +13,7 @@ public interface IInfusionStabiliserExt extends IInfusionStabiliser {
 	 * @param pos
 	 * @return 
 	 */
-	public float getStabilizationAmount(World world, BlockPos pos);
+	public float getStabilizationAmount(Level world, BlockPos pos);
 	
 	/**
 	 * Use this method to do an additional check for symmetry if the default checks are passed. 
@@ -23,11 +23,11 @@ public interface IInfusionStabiliserExt extends IInfusionStabiliser {
 	 * @param pos2 the second block as determined by symmetry
 	 * @return
 	 */
-	default public boolean hasSymmetryPenalty(World world, BlockPos pos1, BlockPos pos2) { 
+	default public boolean hasSymmetryPenalty(Level world, BlockPos pos1, BlockPos pos2) { 
 		return false; 
 	}
 	
-	default public float getSymmetryPenalty(World world, BlockPos pos) { 
+	default public float getSymmetryPenalty(Level world, BlockPos pos) { 
 		return 0; 
 	}
 	

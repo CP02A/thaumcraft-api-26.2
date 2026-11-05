@@ -1,27 +1,33 @@
 package thaumcraft.api.internal;
 
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
+import java.util.Objects;
 
-public class WorldCoordinates implements Comparable
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+
+public class WorldCoordinates implements Comparable<WorldCoordinates>
 {
     public BlockPos pos;
     
-    public int dim;
+    public ResourceKey<Level> dim;
 
     public WorldCoordinates() {}
 
-    public WorldCoordinates(BlockPos pos, int d)
+    public WorldCoordinates(BlockPos pos, ResourceKey<Level> d)
     {
         this.pos = pos;
         this.dim = d;
     }
     
-    public WorldCoordinates(TileEntity tile)
+    public WorldCoordinates(BlockEntity tile)
     {
-        this.pos = tile.getPos();
-        this.dim = tile.getWorld().provider.getDimension();
+        this.pos = tile.getBlockPos();
+        this.dim = tile.getLevel().dimension();
     }
 
     public WorldCoordinates(WorldCoordinates par1ChunkCoordinates)
@@ -39,13 +45,13 @@ public class WorldCoordinates implements Comparable
         else
         {
         	WorldCoordinates coordinates = (WorldCoordinates)par1Obj;
-            return this.pos.equals(coordinates.pos) && this.dim == coordinates.dim ;
+            return this.pos.equals(coordinates.pos) && Objects.equals(this.dim, coordinates.dim) ;
         }
     }
 
     public int hashCode()
     {
-        return this.pos.getX() + this.pos.getY() << 8 + this.pos.getZ() << 16 + this.dim << 24;
+        return Objects.hash(this.pos, this.dim);
     }
 
     /**
@@ -53,10 +59,10 @@ public class WorldCoordinates implements Comparable
      */
     public int compareWorldCoordinate(WorldCoordinates par1)
     {
-        return this.dim == par1.dim ? this.pos.compareTo(par1.pos) : -1;
+        return Objects.equals(this.dim, par1.dim) ? this.pos.compareTo(par1.pos) : -1;
     }
 
-    public void set(BlockPos pos, int d)
+    public void set(BlockPos pos, ResourceKey<Level> d)
     {
         this.pos = pos;
         this.dim = d;
@@ -67,7 +73,7 @@ public class WorldCoordinates implements Comparable
      */
     public double getDistanceSquared(BlockPos pos)
     {
-        return this.pos.distanceSq(pos);
+        return this.pos.distSqr(pos);
     }
 
     /**
@@ -78,24 +84,24 @@ public class WorldCoordinates implements Comparable
         return this.getDistanceSquared(par1ChunkCoordinates.pos);
     }
 
-    public int compareTo(Object par1Obj)
+    public int compareTo(WorldCoordinates par1Obj)
     {
-        return this.compareWorldCoordinate((WorldCoordinates)par1Obj);
+        return this.compareWorldCoordinate(par1Obj);
     }
     
-    public void readNBT(NBTTagCompound nbt) {
-    	int x = nbt.getInteger("w_x");
-    	int y = nbt.getInteger("w_y");
-    	int z = nbt.getInteger("w_z");
+    public void readNBT(CompoundTag nbt) {
+    	int x = nbt.getIntOr("w_x", 0);
+    	int y = nbt.getIntOr("w_y", 0);
+    	int z = nbt.getIntOr("w_z", 0);
     	this.pos = new BlockPos(x,y,z);
-    	this.dim = nbt.getInteger("w_d");
+    	this.dim = ResourceKey.create(Registries.DIMENSION, Identifier.parse(nbt.getStringOr("w_d", "minecraft:overworld")));
     }
     
-    public void writeNBT(NBTTagCompound nbt) {
-    	nbt.setInteger("w_x",pos.getX());
-    	nbt.setInteger("w_y",pos.getY());
-    	nbt.setInteger("w_z",pos.getZ());
-    	nbt.setInteger("w_d",dim);
+    public void writeNBT(CompoundTag nbt) {
+    	nbt.putInt("w_x",pos.getX());
+    	nbt.putInt("w_y",pos.getY());
+    	nbt.putInt("w_z",pos.getZ());
+    	if (dim != null) nbt.putString("w_d",dim.identifier().toString());
     }
     
 }

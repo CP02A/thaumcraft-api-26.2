@@ -1,7 +1,7 @@
 package thaumcraft.api.items;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
 
 
@@ -14,6 +14,6 @@ import net.minecraft.item.ItemStack;
  */
 public interface IVisDiscountGear {
 		
-	int getVisDiscount(ItemStack stack, EntityPlayer player);
+	int getVisDiscount(ItemStack stack, Player player);
 
 }

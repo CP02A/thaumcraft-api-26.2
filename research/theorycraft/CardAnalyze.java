@@ -3,11 +3,12 @@ package thaumcraft.api.research.theorycraft;
 import java.util.ArrayList;
 import java.util.Random;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Mth;
+import net.minecraft.locale.Language;
+import net.minecraft.network.chat.Component;
+import net.minecraft.ChatFormatting;
 import thaumcraft.api.capabilities.IPlayerKnowledge.EnumKnowledgeType;
 import thaumcraft.api.capabilities.ThaumcraftCapabilities;
 import thaumcraft.api.research.ResearchCategories;
@@ -18,16 +19,16 @@ public class CardAnalyze extends TheorycraftCard {
 	String cat = null;
 	
 	@Override
-	public NBTTagCompound serialize() {
-		NBTTagCompound nbt = super.serialize();
-		nbt.setString("cat", cat);
+	public CompoundTag serialize() {
+		CompoundTag nbt = super.serialize();
+		nbt.putString("cat", cat);
 		return nbt;
 	}
 
 	@Override
-	public void deserialize(NBTTagCompound nbt) {
+	public void deserialize(CompoundTag nbt) {
 		super.deserialize(nbt);
-		cat = nbt.getString("cat");
+		cat = nbt.getStringOr("cat", "");
 	}
 	
 	@Override
@@ -36,7 +37,7 @@ public class CardAnalyze extends TheorycraftCard {
 	}
 	
 	@Override
-	public boolean initialize(EntityPlayer player, ResearchTableData data) { 
+	public boolean initialize(Player player, ResearchTableData data) { 
 		Random r = new Random(this.getSeed());
 		ArrayList<String> cats = new ArrayList<>();
 		for (ResearchCategory rc:ResearchCategories.researchCategories.values()) {
@@ -58,28 +59,28 @@ public class CardAnalyze extends TheorycraftCard {
 	
 	@Override
 	public String getLocalizedName() {
-		return new TextComponentTranslation("card.analyze.name", new Object[] {
-				TextFormatting.DARK_BLUE+""+TextFormatting.BOLD+new TextComponentTranslation("tc.research_category."+cat).getFormattedText()+TextFormatting.RESET
-				}).getUnformattedText();
+		return Component.translatable("card.analyze.name", new Object[] {
+				ChatFormatting.DARK_BLUE+""+ChatFormatting.BOLD+Language.getInstance().getOrDefault("tc.research_category."+cat)+ChatFormatting.RESET
+				}).getString();
 	}
 	
 	@Override
 	public String getLocalizedText() {
-		return new TextComponentTranslation("card.analyze.text", new Object[] {
-				TextFormatting.BOLD+new TextComponentTranslation("tc.research_category."+cat).getFormattedText()+TextFormatting.RESET,
-				TextFormatting.BOLD+new TextComponentTranslation("tc.research_category.BASICS").getFormattedText()+TextFormatting.RESET
-				}).getUnformattedText();
+		return Component.translatable("card.analyze.text", new Object[] {
+				ChatFormatting.BOLD+Language.getInstance().getOrDefault("tc.research_category."+cat)+ChatFormatting.RESET,
+				ChatFormatting.BOLD+Language.getInstance().getOrDefault("tc.research_category.BASICS")+ChatFormatting.RESET
+				}).getString();
 	}
 	
 	@Override
-	public boolean activate(EntityPlayer player, ResearchTableData data) {
+	public boolean activate(Player player, ResearchTableData data) {
 		ResearchCategory rc = ResearchCategories.getResearchCategory(cat);
 		int k = ThaumcraftCapabilities.getKnowledge(player).getKnowledge(EnumKnowledgeType.OBSERVATION, rc);		
 		if (k>=1) {
 			data.addTotal("BASICS", 5);
 			ThaumcraftCapabilities.getKnowledge(player).addKnowledge(
 					EnumKnowledgeType.OBSERVATION, rc, -EnumKnowledgeType.OBSERVATION.getProgression());
-			data.addTotal(cat, MathHelper.getInt(player.getRNG(), 25, 50));
+			data.addTotal(cat, Mth.nextInt(player.getRandom(), 25, 50));
 			return true;
 		}
 		return false;

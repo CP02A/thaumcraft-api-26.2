@@ -3,26 +3,27 @@ package thaumcraft.api.research.theorycraft;
 import java.util.ArrayList;
 import java.util.Random;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.locale.Language;
+import net.minecraft.network.chat.Component;
+import net.minecraft.ChatFormatting;
 
 public class CardReject extends TheorycraftCard {
 	
 	private String cat1;
 	
 	@Override
-	public NBTTagCompound serialize() {
-		NBTTagCompound nbt = super.serialize();
-		nbt.setString("cat", cat1);
+	public CompoundTag serialize() {
+		CompoundTag nbt = super.serialize();
+		nbt.putString("cat", cat1);
 		return nbt;
 	}
 
 	@Override
-	public void deserialize(NBTTagCompound nbt) {
+	public void deserialize(CompoundTag nbt) {
 		super.deserialize(nbt);
-		cat1 = nbt.getString("cat");
+		cat1 = nbt.getStringOr("cat", "");
 	}
 	
 	@Override
@@ -32,20 +33,20 @@ public class CardReject extends TheorycraftCard {
 		
 	@Override
 	public String getLocalizedName() {
-		return new TextComponentTranslation("card.reject.name", new Object[] {
-				TextFormatting.DARK_BLUE+""+TextFormatting.BOLD+new TextComponentTranslation("tc.research_category."+cat1).getUnformattedText()+TextFormatting.RESET+""+TextFormatting.BOLD
-				}).getUnformattedText();
+		return Component.translatable("card.reject.name", new Object[] {
+				ChatFormatting.DARK_BLUE+""+ChatFormatting.BOLD+Language.getInstance().getOrDefault("tc.research_category."+cat1)+ChatFormatting.RESET+""+ChatFormatting.BOLD
+				}).getString();
 	}
 	
 	@Override
 	public String getLocalizedText() {
-		return new TextComponentTranslation("card.reject.text", new Object[] {
-				TextFormatting.BOLD+new TextComponentTranslation("tc.research_category."+cat1).getFormattedText()+TextFormatting.RESET
-				}).getUnformattedText();
+		return Component.translatable("card.reject.text", new Object[] {
+				ChatFormatting.BOLD+Language.getInstance().getOrDefault("tc.research_category."+cat1)+ChatFormatting.RESET
+				}).getString();
 	}
 
 	@Override
-	public boolean initialize(EntityPlayer player, ResearchTableData data) {
+	public boolean initialize(Player player, ResearchTableData data) {
 		ArrayList<String> s = new ArrayList<>();
 		for (String c:data.categoryTotals.keySet()) {
 			if (!data.categoriesBlocked.contains(c))
@@ -58,7 +59,7 @@ public class CardReject extends TheorycraftCard {
 	}
 
 	@Override
-	public boolean activate(EntityPlayer player, ResearchTableData data) {		
+	public boolean activate(Player player, ResearchTableData data) {		
 		if (cat1==null) return false;
 		data.addTotal("BASICS", 5);
 		data.categoriesBlocked.add(cat1);				

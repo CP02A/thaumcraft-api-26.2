@@ -1,9 +1,10 @@
 package thaumcraft.api.research.theorycraft;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.locale.Language;
+import net.minecraft.network.chat.Component;
+import net.minecraft.ChatFormatting;
 
 public class CardInspired extends TheorycraftCard {
 	
@@ -11,18 +12,18 @@ public class CardInspired extends TheorycraftCard {
 	int amt;
 	
 	@Override
-	public NBTTagCompound serialize() {
-		NBTTagCompound nbt = super.serialize();
-		nbt.setString("cat", cat);
-		nbt.setInteger("amt", amt);
+	public CompoundTag serialize() {
+		CompoundTag nbt = super.serialize();
+		nbt.putString("cat", cat);
+		nbt.putInt("amt", amt);
 		return nbt;
 	}
 
 	@Override
-	public void deserialize(NBTTagCompound nbt) {
+	public void deserialize(CompoundTag nbt) {
 		super.deserialize(nbt);
-		cat = nbt.getString("cat");
-		amt = nbt.getInteger("amt");
+		cat = nbt.getStringOr("cat", "");
+		amt = nbt.getIntOr("amt", 0);
 	}
 	
 	@Override
@@ -31,7 +32,7 @@ public class CardInspired extends TheorycraftCard {
 	}
 	
 	@Override
-	public boolean initialize(EntityPlayer player, ResearchTableData data) { 
+	public boolean initialize(Player player, ResearchTableData data) { 
 		if (data.categoryTotals.size()<1) return false;
 		int hVal=0;
 		String hKey="";
@@ -54,17 +55,17 @@ public class CardInspired extends TheorycraftCard {
 	
 	@Override
 	public String getLocalizedName() {
-		return new TextComponentTranslation("card.inspired.name").getUnformattedText();
+		return Language.getInstance().getOrDefault("card.inspired.name");
 	}
 	
 	@Override
 	public String getLocalizedText() {
-		return new TextComponentTranslation("card.inspired.text", new Object[] {
-				amt, TextFormatting.BOLD+new TextComponentTranslation("tc.research_category."+cat).getFormattedText()+TextFormatting.RESET}).getUnformattedText();
+		return Component.translatable("card.inspired.text", new Object[] {
+				amt, ChatFormatting.BOLD+Language.getInstance().getOrDefault("tc.research_category."+cat)+ChatFormatting.RESET}).getString();
 	}
 	
 	@Override
-	public boolean activate(EntityPlayer player, ResearchTableData data) {
+	public boolean activate(Player player, ResearchTableData data) {
 		data.addTotal(cat, amt);
 		return true;
 	}

@@ -1,8 +1,8 @@
 package thaumcraft.api.research;
 
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import thaumcraft.api.ThaumcraftInvHelper;
 
 public class ScanItem implements IScanThing {
@@ -16,21 +16,21 @@ public class ScanItem implements IScanThing {
 	}
 
 	@Override
-	public boolean checkThing(EntityPlayer player, Object obj) {	
+	public boolean checkThing(Player player, Object obj) {	
 		if (obj == null) return false;
 		
 		ItemStack is = null;
 		
 		if (obj instanceof ItemStack) 
 			is = (ItemStack) obj;
-		if (obj instanceof EntityItem && ((EntityItem)obj).getItem()!=null) 
-			is = ((EntityItem)obj).getItem();
+		if (obj instanceof ItemEntity && ((ItemEntity)obj).getItem()!=null) 
+			is = ((ItemEntity)obj).getItem();
 		
 		return is!=null && !is.isEmpty() && ThaumcraftInvHelper.areItemStacksEqualForCrafting(is, stack);
 	}
 
 	@Override
-	public String getResearchKey(EntityPlayer player, Object object) {
+	public String getResearchKey(Player player, Object object) {
 		return research;
 	}
 	

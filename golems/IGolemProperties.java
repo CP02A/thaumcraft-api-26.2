@@ -2,7 +2,7 @@ package thaumcraft.api.golems;
 
 import java.util.Set;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import thaumcraft.api.golems.parts.GolemAddon;
 import thaumcraft.api.golems.parts.GolemArm;
 import thaumcraft.api.golems.parts.GolemHead;

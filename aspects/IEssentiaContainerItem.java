@@ -1,6 +1,6 @@
 package thaumcraft.api.aspects;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * 
@@ -21,13 +21,14 @@ public interface IEssentiaContainerItem {
 	public boolean ignoreContainedAspects();
 }
 
-//Example implementation
+//Example implementation, storing the aspects in the stack's custom data component
 /*  
 	@Override
 	public AspectList getAspects(ItemStack itemstack) {
-		if (itemstack.hasTagCompound()) {
+		CustomData data = itemstack.get(DataComponents.CUSTOM_DATA);
+		if (data != null) {
 			AspectList aspects = new AspectList();
-			aspects.readFromNBT(itemstack.getTagCompound());
+			aspects.readFromNBT(data.copyTag());
 			return aspects.size()>0?aspects:null;
 		}
 		return null;
@@ -35,8 +36,7 @@ public interface IEssentiaContainerItem {
 	
 	@Override
 	public void setAspects(ItemStack itemstack, AspectList aspects) {
-		if (!itemstack.hasTagCompound()) itemstack.setTagCompound(new NBTTagCompound());
-		aspects.writeToNBT(itemstack.getTagCompound());
+		CustomData.update(DataComponents.CUSTOM_DATA, itemstack, tag -> aspects.writeToNBT(tag));
 	}
 	
 	@Override

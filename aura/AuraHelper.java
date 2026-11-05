@@ -1,8 +1,8 @@
 package thaumcraft.api.aura;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import thaumcraft.api.ThaumcraftApi;
 
 public class AuraHelper {
@@ -16,7 +16,7 @@ public class AuraHelper {
 	 * @param simulate
 	 * @return how much was actually drained
 	 */
-	public static float drainVis(World world, BlockPos pos, float amount, boolean simulate) {
+	public static float drainVis(Level world, BlockPos pos, float amount, boolean simulate) {
 		return ThaumcraftApi.internalMethods.drainVis(world,pos, amount, simulate);
 	}
 	
@@ -29,7 +29,7 @@ public class AuraHelper {
 	 * @param simulate
 	 * @return how much was actually drained
 	 */
-	public static float drainFlux(World world, BlockPos pos, float amount, boolean simulate) {
+	public static float drainFlux(Level world, BlockPos pos, float amount, boolean simulate) {
 		return ThaumcraftApi.internalMethods.drainFlux(world,pos, amount,simulate);
 	}
 		
@@ -40,7 +40,7 @@ public class AuraHelper {
 	 * @param pos
 	 * @param amount
 	 */
-	public static void addVis(World world, BlockPos pos, float amount) {
+	public static void addVis(Level world, BlockPos pos, float amount) {
 		ThaumcraftApi.internalMethods.addVis(world,pos, amount);
 	}
 	
@@ -50,7 +50,7 @@ public class AuraHelper {
 	 * @param pos
 	 * @return
 	 */
-	public static float getVis(World world, BlockPos pos) {
+	public static float getVis(Level world, BlockPos pos) {
 		return ThaumcraftApi.internalMethods.getVis(world,pos);
 	}
 	
@@ -61,7 +61,7 @@ public class AuraHelper {
 	 * @param amount how much stability to remove
 	 * @param showEffect if set to true, a flux smoke effect and sound will also be displayed. Use in moderation.
 	 */
-	public static void polluteAura(World world, BlockPos pos, float amount, boolean showEffect) {
+	public static void polluteAura(Level world, BlockPos pos, float amount, boolean showEffect) {
 		ThaumcraftApi.internalMethods.addFlux(world,pos,amount,showEffect);
 	}
 	
@@ -71,7 +71,7 @@ public class AuraHelper {
 	 * @param pos
 	 * @return
 	 */
-	public static float getFlux(World world, BlockPos pos) {
+	public static float getFlux(Level world, BlockPos pos) {
 		return ThaumcraftApi.internalMethods.getFlux(world,pos);
 	}
 	
@@ -81,7 +81,7 @@ public class AuraHelper {
 	 * @param pos
 	 * @return
 	 */
-	public static int getAuraBase(World world, BlockPos pos) {
+	public static int getAuraBase(Level world, BlockPos pos) {
 		return ThaumcraftApi.internalMethods.getAuraBase(world,pos);
 	}
 	
@@ -93,7 +93,7 @@ public class AuraHelper {
 	 * @param pos
 	 * @return
 	 */
-	public static boolean shouldPreserveAura(World world, EntityPlayer player, BlockPos pos) {
+	public static boolean shouldPreserveAura(Level world, Player player, BlockPos pos) {
 		return ThaumcraftApi.internalMethods.shouldPreserveAura(world,player,pos);
 	}
 }

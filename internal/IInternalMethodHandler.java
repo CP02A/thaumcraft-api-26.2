@@ -1,9 +1,10 @@
 package thaumcraft.api.internal;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.capabilities.IPlayerKnowledge.EnumKnowledgeType;
 import thaumcraft.api.capabilities.IPlayerWarp.EnumWarpType;
@@ -50,7 +51,7 @@ public interface IInternalMethodHandler {
 	 * @param amount
 	 * @return if the knowledge was added
 	 */
-	public boolean addKnowledge(EntityPlayer player, EnumKnowledgeType type, ResearchCategory category, int amount);
+	public boolean addKnowledge(Player player, EnumKnowledgeType type, ResearchCategory category, int amount);
 	
 	/**
 	 * Progresses research with all the proper bells and whistles (popups, sounds, warp, etc)
@@ -60,7 +61,7 @@ public interface IInternalMethodHandler {
 	 * @param researchkey
 	 * @return if operation succeeded
 	 */
-	boolean progressResearch(EntityPlayer player, String researchkey);
+	boolean progressResearch(Player player, String researchkey);
 	
 	/**
 	 * Completes research with all the proper bells and whistles (popups, sounds, warp, etc)
@@ -70,14 +71,14 @@ public interface IInternalMethodHandler {
 	 * @param researchkey
 	 * @return if operation succeeded
 	 */
-	public boolean completeResearch(EntityPlayer player, String researchkey);
+	public boolean completeResearch(Player player, String researchkey);
 	
 	/**
 	 * @param player 
 	 * @param researchkey the key of the research you want to check
 	 * @return does the player have all the required knowledge to complete the passed researchkey
 	 */
-	boolean doesPlayerHaveRequisites(EntityPlayer player, String researchkey);
+	boolean doesPlayerHaveRequisites(Player player, String researchkey);
 	
 	/**
 	 * Adds warp with all the proper bells and whistles (text, sounds, etc)
@@ -85,22 +86,22 @@ public interface IInternalMethodHandler {
 	 * @param researchkey
 	 * @return
 	 */
-	public void addWarpToPlayer(EntityPlayer player, int amount, EnumWarpType type);
+	public void addWarpToPlayer(Player player, int amount, EnumWarpType type);
 	
 	/**
 	 * The total of the players normal + permanent warp. NOT temporary warp.
 	 * @param player
 	 * @return
 	 */
-	public int getActualWarp(EntityPlayer player);
+	public int getActualWarp(Player player);
 
 	public AspectList getObjectAspects(ItemStack is);
 	public AspectList generateTags(ItemStack is);
 	
-	public float drainVis(World world, BlockPos pos, float amount, boolean simulate);
-	public float drainFlux(World world, BlockPos pos, float amount, boolean simulate);	
-	public void addVis(World world, BlockPos pos, float amount);
-	public void addFlux(World world, BlockPos pos, float amount, boolean showEffect);			
+	public float drainVis(Level world, BlockPos pos, float amount, boolean simulate);
+	public float drainFlux(Level world, BlockPos pos, float amount, boolean simulate);	
+	public void addVis(Level world, BlockPos pos, float amount);
+	public void addFlux(Level world, BlockPos pos, float amount, boolean showEffect);			
 	
 	/**
 	 * returns the aura and flux in a chunk added together
@@ -108,16 +109,16 @@ public interface IInternalMethodHandler {
 	 * @param pos
 	 * @return
 	 */
-	public float getTotalAura(World world, BlockPos pos);
-	public float getVis(World world, BlockPos pos);
-	public float getFlux(World world, BlockPos pos);
-	public int getAuraBase(World world, BlockPos pos);	
+	public float getTotalAura(Level world, BlockPos pos);
+	public float getVis(Level world, BlockPos pos);
+	public float getFlux(Level world, BlockPos pos);
+	public int getAuraBase(Level world, BlockPos pos);	
 	
 	public void registerSeal(ISeal seal);
 	public ISeal getSeal(String key);
-	public ISealEntity getSealEntity(int dim, SealPos pos);
-	public void addGolemTask(int dim, Task task);
-	public boolean shouldPreserveAura(World world, EntityPlayer player, BlockPos pos);
+	public ISealEntity getSealEntity(ResourceKey<Level> dim, SealPos pos);
+	public void addGolemTask(ResourceKey<Level> dim, Task task);
+	public boolean shouldPreserveAura(Level world, Player player, BlockPos pos);
 	public ItemStack getSealStack(String key);
 
 	

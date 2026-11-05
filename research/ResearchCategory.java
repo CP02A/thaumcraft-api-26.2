@@ -3,8 +3,8 @@ package thaumcraft.api.research;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.Mth;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 
@@ -23,16 +23,16 @@ public class ResearchCategory {
     public int maxDisplayRow;
     
     /** display variables **/
-    public ResourceLocation icon;
-    public ResourceLocation background;
-    public ResourceLocation background2;
+    public Identifier icon;
+    public Identifier background;
+    public Identifier background2;
     
     public String researchKey;
     public String key;
     
     public AspectList formula;
 	
-	public ResearchCategory(String key, String researchkey, AspectList formula, ResourceLocation icon, ResourceLocation background) {
+	public ResearchCategory(String key, String researchkey, AspectList formula, Identifier icon, Identifier background) {
 		this.key = key;
 		this.researchKey = researchkey;
 		this.icon = icon;
@@ -41,7 +41,7 @@ public class ResearchCategory {
 		this.formula = formula;
 	}
 	
-	public ResearchCategory(String key, String researchKey, AspectList formula, ResourceLocation icon, ResourceLocation background, ResourceLocation background2) {
+	public ResearchCategory(String key, String researchKey, AspectList formula, Identifier icon, Identifier background, Identifier background2) {
 		this.key = key;
 		this.researchKey = researchKey;
 		this.icon = icon;
@@ -72,7 +72,7 @@ public class ResearchCategory {
 			total += (mod * mod) * as.getAmount(aspect) * (formula.getAmount(aspect) / 10d);
 		}
 		if (total>0) total = Math.sqrt(total); 
-		return MathHelper.ceil( total );
+		return Mth.ceil( total );
 	}
 
 	//Research

@@ -1,7 +1,7 @@
 package thaumcraft.api.research.theorycraft;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.locale.Language;
 
 public class CardPonder extends TheorycraftCard {
 
@@ -12,21 +12,21 @@ public class CardPonder extends TheorycraftCard {
 		
 	@Override
 	public String getLocalizedName() {
-		return new TextComponentTranslation("card.ponder.name").getUnformattedText();
+		return Language.getInstance().getOrDefault("card.ponder.name");
 	}
 	
 	@Override
 	public String getLocalizedText() {
-		return new TextComponentTranslation("card.ponder.text").getUnformattedText();
+		return Language.getInstance().getOrDefault("card.ponder.text");
 	}
 	
 	@Override
-	public boolean initialize(EntityPlayer player, ResearchTableData data) {
+	public boolean initialize(Player player, ResearchTableData data) {
 		return data.categoriesBlocked.size()<data.categoryTotals.size();
 	}
 
 	@Override
-	public boolean activate(EntityPlayer player, ResearchTableData data) {
+	public boolean activate(Player player, ResearchTableData data) {
 		int a = 25;
 		int tries=0;
 		while (a>0 && tries<1000) {

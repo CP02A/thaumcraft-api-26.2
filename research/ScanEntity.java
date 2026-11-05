@@ -1,8 +1,10 @@
 package thaumcraft.api.research;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.storage.TagValueOutput;
 import thaumcraft.api.ThaumcraftApi.EntityTagsNBT;
 import thaumcraft.api.ThaumcraftApiHelper;
 
@@ -23,6 +25,9 @@ public class ScanEntity implements IScanThing {
 		this.inheritedClasses = inheritedClasses;
 	}
 	
+	/**
+	 * @param nbt values that must be present in the entity's saved data for it to match
+	 */
 	public ScanEntity(String research, Class entityClass, boolean inheritedClasses, EntityTagsNBT... nbt) {
 		this.research = research;
 		this.entityClass = entityClass;
@@ -31,15 +36,15 @@ public class ScanEntity implements IScanThing {
 	}
 
 	@Override
-	public boolean checkThing(EntityPlayer player, Object obj) {		
+	public boolean checkThing(Player player, Object obj) {		
 		if (obj!=null && ((!inheritedClasses && entityClass==obj.getClass()) || 
 				(inheritedClasses && entityClass.isInstance(obj)))) {			
-			if (NBTData!=null && NBTData.length>0) {
-				boolean b = true;
-				NBTTagCompound tc = new NBTTagCompound();
-				((Entity)obj).writeToNBT(tc);
+			if (NBTData!=null && NBTData.length>0 && obj instanceof Entity entity) {
+				TagValueOutput out = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, entity.registryAccess());
+				entity.saveWithoutId(out);
+				CompoundTag tc = out.buildResult();
 				for (EntityTagsNBT nbt:NBTData) {
-					if (!tc.hasKey(nbt.name) || !ThaumcraftApiHelper.getNBTDataFromId(tc, tc.getTagId(nbt.name), nbt.name).equals(nbt.value)) {
+					if (!tc.contains(nbt.name) || !ThaumcraftApiHelper.getNBTDataFromId(tc, tc.get(nbt.name).getId(), nbt.name).equals(nbt.value)) {
 						return false;
 					} 					
 				} 			
@@ -50,7 +55,7 @@ public class ScanEntity implements IScanThing {
 	}
 
 	@Override
-	public String getResearchKey(EntityPlayer player, Object object) {
+	public String getResearchKey(Player player, Object object) {
 		return research;
 	}
 	

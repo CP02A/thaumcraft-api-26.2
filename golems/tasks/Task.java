@@ -2,8 +2,8 @@ package thaumcraft.api.golems.tasks;
 
 import java.util.UUID;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.Entity;
 import thaumcraft.api.golems.GolemHelper;
 import thaumcraft.api.golems.IGolemAPI;
 import thaumcraft.api.golems.ProvisionRequest;
@@ -46,9 +46,9 @@ public class Task {
 		this.sealPos = sealPos;
 		this.entity = entity;
 		if (sealPos==null) {
-			this.id = (System.currentTimeMillis()+"/ENPOS/"+entity.getEntityId()).hashCode();
+			this.id = (System.currentTimeMillis()+"/ENPOS/"+entity.getId()).hashCode();
 		} else
-			this.id = (System.currentTimeMillis()+"/E/"+sealPos.face.toString()+"/"+sealPos.pos.toString()+"/"+entity.getEntityId()).hashCode();
+			this.id = (System.currentTimeMillis()+"/E/"+sealPos.face.toString()+"/"+sealPos.pos.toString()+"/"+entity.getId()).hashCode();
 		this.type = 1;
 		this.lifespan = 300;
 	}	
@@ -79,7 +79,7 @@ public class Task {
 	}
 
 	public BlockPos getPos() {
-		return type==1?entity.getPosition():pos;
+		return type==1?entity.blockPosition():pos;
 	}	
 	
 	public byte getType() {
@@ -138,7 +138,7 @@ public class Task {
 	}
 
 	public boolean canGolemPerformTask(IGolemAPI golem) {
-		ISealEntity se = GolemHelper.getSealEntity(golem.getGolemWorld().provider.getDimension(), this.sealPos);
+		ISealEntity se = GolemHelper.getSealEntity(golem.getGolemWorld().dimension(), this.sealPos);
 		if (se!=null) {
 			if (golem.getGolemColor()>0 && se.getColor()>0 && golem.getGolemColor() != se.getColor()) return false;
 			return se.getSeal().canGolemPerformTask(golem,this);
