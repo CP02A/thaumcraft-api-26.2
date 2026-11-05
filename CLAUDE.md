@@ -6,7 +6,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is the public API source for Thaumcraft (a Minecraft Forge mod), not a runnable mod. The Java files are meant to be copied into an addon's source tree under `thaumcraft/api/` (root `.java` files are in package `thaumcraft.api`, and each subfolder is its matching subpackage). Thaumcraft itself provides the implementation at runtime.
 
-There is no build system, no tests, no lint config, and no README in this repo. The only tracked files are `.java` sources, `research/_example.json.txt`, and git metadata files. Do not invent build or test commands; there are none to run here. Verify changes by reading them and checking that they compile against Minecraft/Forge in the consuming mod.
+## Build
+
+- `./gradlew compileJava` compiles the API against Forge `26.2-65.1.6` (ForgeGradle 7, Gradle 9.5.0 wrapper, Java 25 toolchain). The first run downloads and sets up Minecraft, which takes several minutes.
+- `build.gradle` uses the repo root as the Java source directory, because the sources are not under `src/main/java`.
+- There are no tests or lint config.
+- The sources were written for Minecraft 1.12 / old Forge and do not yet compile against 26.2. Until they are ported, the compile fails with hundreds of errors. Use compile output to check porting progress.
 
 ## Architecture
 

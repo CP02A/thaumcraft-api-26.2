@@ -2,7 +2,7 @@
 
 Developer API for [Thaumcraft](https://github.com/Azanor/Thaumcraft), a Minecraft Forge mod. This repository contains the Java source for `thaumcraft.api`, which addon mods compile against to add aspects, recipes, research, casters and foci, golems and seals, and other Thaumcraft content.
 
-This is not a standalone mod. It has no build script and no tests. The classes here are interfaces, data types, and static registration methods; the implementation lives in Thaumcraft itself and is wired in at runtime.
+This is not a standalone mod. The classes here are interfaces, data types, and static registration methods; the implementation lives in Thaumcraft itself and is wired in at runtime.
 
 ## Using the API
 
@@ -26,6 +26,16 @@ Thaumcraft must be a dependency of your mod so that its classes are on the compi
 ### Research
 
 Research is defined in JSON in your addon's assets and registered with `ThaumcraftApi.registerResearchLocation`. See [`research/_example.json.txt`](research/_example.json.txt) for the full schema, including stages, addenda, parents and siblings, and requirements.
+
+## Building
+
+```sh
+./gradlew compileJava
+```
+
+This compiles the API against Forge `26.2-65.1.6` using ForgeGradle 7 and a Java 25 toolchain. The first run downloads and sets up Minecraft, which takes several minutes.
+
+The sources were written for Minecraft 1.12 and have not yet been ported to 26.2, so the compile currently fails.
 
 ## Layout
 
